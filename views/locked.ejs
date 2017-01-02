@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title %>
+    </title>
+</head>
+<style>
+    html {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        height: 100%;
+        box-sizing: border-box;
+        background: #EFF0F4;
+    }
+
+    *,
+    *:before,
+    *:after {
+        box-sizing: inherit;
+    }
+
+    body {
+        margin: 0;
+        height: 100%;
+    }
+
+    header {
+        font-size: 26px;
+        height: 50px;
+        line-height: 50px;
+        display: flex;
+        text-align: center;
+        background: #333C4A;
+        color: white;
+    }
+
+    header > * {
+      flex: 1;
+    }
+
+    button {
+        padding: 5px 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        background: #58B3D3;
+        border: none;
+        color: white;
+        transition: background 0.4s;
+        cursor: pointer;
+    }
+
+    button:hover {
+      background: #418C9F;
+    }
+
+    button.disabled {
+      pointer-events: none;
+      background: #418C9F;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100% - 50px);
+    }
+
+    .container {
+        background: #fff;
+        position: relative;
+        height: 500px;
+        width: 500px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+        box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    }
+
+    .prev-img-container {
+        position: absolute;
+        top: 0;
+        height: 25px;
+        width: 500px;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .prev-img {
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+
+<body>
+    <header>
+        <span>exquisite-corpse</span>
+        <span class="subtitle">Part <%= part %></span>
+        <button class="pass-btn disabled">Saved</button>
+    </header>
+
+
+    <div class="content">
+        <div class="container"></div>
+    </div>
+
+    <script>
+    // Get drawing
+    const path = window.location.pathname.split('/')
+    const id = path[path.length - 2]
+    const part = parseInt(path[path.length - 1])
+    const prevImage = document.getElementById('prev-img')
+    fetch(`/api/drawings/${id}`)
+        .then(blob => blob.json())
+        .then(drawing => {
+          let canvasData = drawing.canvasData
+          let data = canvasData[part]
+          if (!data) return console.log(`canvas data found but none for part ${part}`)
+          let image = data.image
+          console.log('add image to container')
+          const container = document.querySelector('.container')
+          const imageEl = new Image()
+          imageEl.src = image;
+          container.appendChild(imageEl);
+        })
+    </script>
+</body>
+
+</html>

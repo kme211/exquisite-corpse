@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Artwork</title>
+  <style>
+  html {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      height: 100%;
+      box-sizing: border-box;
+      background: #EFF0F4;
+  }
+
+  *,
+  *:before,
+  *:after {
+      box-sizing: inherit;
+  }
+
+  body {
+      margin: 0;
+      height: 100%;
+  }
+
+  header {
+      font-size: 26px;
+      height: 50px;
+      line-height: 50px;
+      display: flex;
+      text-align: center;
+      background: #333C4A;
+      color: white;
+  }
+
+  header > * {
+    flex: 1;
+  }
+
+  img {
+    margin: -25px 0 0 0;
+  }
+
+  button {
+      padding: 5px 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      background: #58B3D3;
+      border: none;
+      color: white;
+      transition: background 0.4s;
+      cursor: pointer;
+  }
+
+  button:hover {
+    background: #418C9F;
+  }
+
+  .subtitle {
+      font-size: 1rem;
+      color: #ccc;
+  }
+
+  .artwork {
+    width: 500px;
+    margin: 1rem auto;
+    background: #fff;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <span>exquisite-corpse</span>
+    <span class="subtitle">Final</span>
+    <button class="share-btn">Share</button>
+  </header>
+    <div class="artwork"></div>
+
+  <script>
+  const path = window.location.pathname.split('/')
+  const id = path[path.length - 2]
+  const container = document.querySelector('.artwork')
+  fetch(`/api/drawings/${id}`)
+    .then(blob => blob.json())
+    .then(drawing => {
+
+      if(drawing.canvasData.length) {
+        let canvasData = drawing.canvasData
+        let len = canvasData.length;
+        for(let i = 0; i < len; i++) {
+          let data = canvasData[i]
+          let image = data.image
+          let imgEl = new Image()
+          imgEl.src = image;
+          container.appendChild(imgEl);
+        }
+      } else {
+        console.log('no canvas data found')
+      }
+    })
+  </script>
+</body>
+</html>

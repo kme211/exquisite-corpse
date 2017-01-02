@@ -1,0 +1,24 @@
+{
+  "name": "exquisite-corpse",
+  "version": "1.0.0",
+  "description": "Collaborative drawing experience",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Keari Eggers",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "dotenv": "^2.0.0",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.5"
+  }
+}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title %>
+    </title>
+</head>
+<style>
+    html {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        height: 100%;
+        box-sizing: border-box;
+        background: #EFF0F4;
+    }
+
+    *,
+    *:before,
+    *:after {
+        box-sizing: inherit;
+    }
+
+    body {
+        margin: 0;
+        height: 100%;
+    }
+
+    header {
+        font-size: 26px;
+        height: 50px;
+        line-height: 50px;
+        display: flex;
+        text-align: center;
+        background: #333C4A;
+        color: white;
+    }
+
+    header > * {
+      flex: 1;
+    }
+
+    canvas {
+        -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+        box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    }
+
+    button {
+        padding: 5px 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        background: #58B3D3;
+        border: none;
+        color: white;
+        transition: background 0.4s;
+        cursor: pointer;
+    }
+
+    button:hover {
+      background: #418C9F;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100% - 50px);
+    }
+
+    .canvas-container {
+        background: #fff;
+        position: relative;
+        height: 500px;
+        width: 500px;
+    }
+
+    .canvas-boundary {
+        height: 25px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        border-top: 1px dashed red;
+        pointer-events: none;
+    }
+
+    .prev-img-container {
+        position: absolute;
+        top: 0;
+        height: 25px;
+        width: 500px;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .prev-img {
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+
+<body>
+    <header>
+        <span>exquisite-corpse</span>
+        <span class="subtitle">Part <%= part %></span>
+        <button class="pass-btn">Pass to next person</button>
+    </header>
+
+
+    <div class="content">
+        <div class="canvas-container">
+            <canvas id="draw" width="500" height="500"></canvas>
+            <div class="prev-img-container"></div>
+            <div class="canvas-boundary"></div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas stuff
+        const canvas = document.querySelector('#draw');
+        const ctx = canvas.getContext('2d');
+
+        ctx.strokeStyle = '#000';
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 15;
+        ctx.globalCompositeOperation = 'overlay'
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let hue = 0;
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            ctx.beginPath()
+            ctx.moveTo(lastX, lastY)
+            ctx.lineTo(e.offsetX, e.offsetY)
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            hue++
+            if (hue >= 360) hue = 0;
+        }
+
+        // Canvas listeners
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+        canvas.addEventListener('mouseup', () => isDrawing = false)
+        canvas.addEventListener('mouseout', () => isDrawing = false)
+
+
+        // Get drawing
+        const path = window.location.pathname.split('/')
+        const id = path[path.length - 2]
+        const part = parseInt(path[path.length - 1])
+        const prevImage = document.getElementById('prev-img')
+        fetch(`/api/drawings/${id}`)
+            .then(blob => blob.json())
+            .then(drawing => {
+                if (drawing.canvasData.length) {
+                    let canvasData = drawing.canvasData
+                    let data = canvasData[part - 1]
+                    if (!data) return console.log(`canvas data found but none for part ${part-1}`)
+                    let image = data.image
+                    console.log('add image to container')
+                    const container = document.querySelector('.prev-img-container')
+                    const prevImage = new Image()
+                    prevImage.src = image;
+                    prevImage.classList.add('prev-img');
+                    container.appendChild(prevImage);
+                } else {
+                    console.log('no canvas data found')
+                }
+            })
+
+        // Save drawing and pass
+        const passBtn = document.querySelector('.pass-btn')
+        passBtn.addEventListener('click', passDrawing)
+
+        function passDrawing() {
+            const image = canvas.toDataURL();
+            const url = `/api/drawings/save/${id}/${part}`;
+            var req = new Request(url, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pos: [part, 0],
+                    image: image
+                })
+            })
+
+            fetch(req)
+                .then(blob => blob.json())
+                .then(res => console.log(res))
+        }
+    </script>
+</body>
+
+</html>
