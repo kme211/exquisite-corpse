@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 const drawingSchema = new Schema({
@@ -6,4 +6,4 @@ const drawingSchema = new Schema({
   date: { type: Date, default: Date.now }
 })
 
-module.exports = drawingSchema;
+mongoose.model('Drawing', drawingSchema)
