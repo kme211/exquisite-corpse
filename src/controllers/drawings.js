@@ -9,7 +9,7 @@ exports.newDrawing = function (req, res) {
   })
 }
 
-exports.getDrawing = function (req, res) {
+exports.showDrawing = function (req, res) {
   const id = req.params.id;
   const part = req.params.part;
   Drawing.findOne({ '_id': id }, (err, drawing) => {
@@ -23,7 +23,7 @@ exports.getDrawing = function (req, res) {
   })
 }
 
-exports.getDrawingJSON = function (req, res) {
+exports.getDrawing = function (req, res) {
   const id = req.params.id
   Drawing.findOne({ '_id': id }, (err, drawing) => {
     if(err) return res.send(err)

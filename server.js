@@ -3,21 +3,19 @@ const fs = require('fs')
 const join = require('path').join
 const express = require('express')
 const mongoose = require('mongoose')
-const config = require('./src/config');
+const config = require('./src/config')
 
-const models = join(__dirname, 'src/models');
+const models = join(__dirname, 'src/models')
 const port = process.env.PORT || 3000;
 const app = express()
-
-
 
 // Bootstrap models
 fs.readdirSync(models)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
-  .forEach(file => require(join(models, file)));
+  .forEach(file => require(join(models, file)))
   
 // Bootstrap routes
-require('./src/config/express')(app);
+require('./src/config/express')(app)
 require('./src/config/routes')(app)
 
 connect()
@@ -27,10 +25,10 @@ connect()
 
 function listen () {
   if (app.get('env') === 'test') return;
-  app.listen(port);
-  console.log('Exquisite Corpse app started on port ' + port);
+  app.listen(port)
+  console.log('Exquisite Corpse app started on port ' + port)
 }
 
 function connect() {
-  return mongoose.connect(`mongodb://${config.db_user}:${config.db_pass}@${config.db_host}`).connection;
+  return mongoose.connect(`mongodb://${config.db_user}:${config.db_pass}@${config.db_host}`).connection
 }
