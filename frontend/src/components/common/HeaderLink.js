@@ -30,3 +30,7 @@ const HeaderLink = (props) => {
 }
 
 export default HeaderLink
+
+HeaderLink.propTypes = {
+  children: PropTypes.node
+}

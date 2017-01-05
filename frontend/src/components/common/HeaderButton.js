@@ -23,4 +23,8 @@ const HeaderButton = (props) => {
   )
 }
 
-export default HeaderButton;
+export default HeaderButton
+
+HeaderButton.propTypes = {
+  children: PropTypes.node
+}

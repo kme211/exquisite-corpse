@@ -1,14 +1,14 @@
 {
-  "name": "exquisite-corpse",
+  "name": "exquisite-corpse-frontend",
   "version": "1.0.0",
-  "description": "Collaborative drawing experience",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:dev": "webpack -d --config webpack.config.dev.js --watch",
-    "start": "node server.js"
+    "start": "webpack-dev-server --config webpack.config.dev.js --hot --inline --history-api-fallback --no-info --port 4000"
   },
-  "author": "Keari Eggers",
+  "author": "Keari Eggers <kungfu.keari@gmail.com>",
+  "repository": "kme211/exquisite-corpse",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -17,22 +17,17 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-react-hmre": "^1.1.1",
+    "chalk": "^1.1.3",
     "eslint": "^3.12.2",
     "eslint-import-resolver-webpack": "^0.8.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.8.0",
-    "nodemon": "^1.11.0",
+    "raw-loader": "^0.5.1",
     "webpack": "^1.14.0",
-    "webpack-dev-middleware": "^1.9.0",
-    "webpack-hot-middleware": "^2.15.0"
+    "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "dotenv": "^2.0.0",
-    "ejs": "^2.5.5",
-    "express": "^4.14.0",
-    "mongoose": "^4.7.5",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-router": "^3.0.0",
