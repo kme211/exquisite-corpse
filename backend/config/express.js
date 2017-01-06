@@ -13,6 +13,7 @@ module.exports = function(app) {
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
   
   const myLogger = function (req, res, next) {
+    if(app.get('env') === 'test') return next()
     console.log(`${req.method} ${req.originalUrl}`)
     next()
   }

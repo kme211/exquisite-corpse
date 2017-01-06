@@ -32,3 +32,5 @@ function listen () {
 function connect() {
   return mongoose.connect(`mongodb://${config.db_user}:${config.db_pass}@${config.db_host}`).connection
 }
+
+module.exports = app

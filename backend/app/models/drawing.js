@@ -7,3 +7,5 @@ const drawingSchema = new Schema({
 })
 
 mongoose.model('Drawing', drawingSchema)
+
+module.exports = drawingSchema
