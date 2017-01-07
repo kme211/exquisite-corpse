@@ -37,10 +37,9 @@ describe('Drawings', () => {
   it('should save canvasData to the drawing', () => {
     const data = {
       id: id,
-      part: 0,
       canvasData: {
         pos: [0, 0],
-        data: 'some mocked data'
+        imageData: 'some mocked data'
       }
     }
 
@@ -49,7 +48,6 @@ describe('Drawings', () => {
       .send(data)
       .then((res) => {
         expect(res.body.id).toBe(id)
-        expect(res.body.nextPartNumber).toBe(1)
       })
   })
 
