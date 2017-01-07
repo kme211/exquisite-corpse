@@ -20,13 +20,13 @@ exports.get = function (req, res) {
 }
 
 exports.save = function (req, res) {
-  const id = req.params.id
-  const part = parseInt(req.params.part);
+  const id = req.body.id
+  const part = parseInt(req.body.part);
   Drawing.findOne({ '_id': id }, (err, drawing) => {
     if(err) return res.send(err)
-    drawing.canvasData.push(req.body)
+    drawing.canvasData.push(req.body.canvasData)
     drawing.save((err, d) => {
-      if(err) return console.log(err)
+      if(err) return res.send(err)
       res.json({
         id: id,
         nextPartNumber: (part + 1)
