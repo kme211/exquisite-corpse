@@ -12,8 +12,9 @@ const app = express()
 // Bootstrap models
 fs.readdirSync(models)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
+  .filter(file => !file.match('.test.'))
   .forEach(file => require(join(models, file)))
-  
+
 // Bootstrap routes
 require('./config/express')(app)
 require('./config/routes')(app)
