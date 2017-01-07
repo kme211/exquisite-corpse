@@ -1,12 +1,15 @@
 import React, {PropTypes} from 'react'
 import styled, {css} from 'styled-components'
 
-const Wrapper = styled.button`
+const styles = ({ width }) => css`
+  width: ${width};
+  box-sizing: border-box;
   font-family: inherit;
   font-size: 1rem;
   background: #58B3D3;
   border: none;
   color: white;
+  padding: 1rem;
   transition: background 0.4s;
   cursor: pointer;
 
@@ -14,17 +17,14 @@ const Wrapper = styled.button`
     background: #418C9F;
   }
 `
+const Wrapper = styled.button`${styles}`
 
-const HeaderButton = (props) => {
-  return (
-    <Wrapper>
-      {props.children}
-    </Wrapper>
-  )
+const Button = (props) => {
+  return <Wrapper {...props} > { props.children } </Wrapper>
 }
 
-export default HeaderButton
+export default Button
 
-HeaderButton.propTypes = {
+Button.propTypes = {
   children: PropTypes.node
 }
