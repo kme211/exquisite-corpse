@@ -4,7 +4,7 @@
   "description": "Collaborative drawing experience",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/cross-env NODE_ENV=test mocha --reporter spec --require babel-register \"app/**/*.test.js\"",
+    "test": "./node_modules/.bin/cross-env NODE_ENV=test mocha --reporter spec --require babel-register",
     "start": "./node_modules/.bin/cross-env NODE_ENV=development nodemon server.js"
   },
   "author": "Keari Eggers <kungfu.keari@gmail.com>",
