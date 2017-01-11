@@ -1,6 +1,6 @@
 const expect = require('expect')
-const helper = require('../test-helper')
-const Drawing = require('../models/drawing')
+const helper = require('../../test-helper')
+const Drawing = require('./drawing')
 const request = require('supertest-as-promised')(helper.app)
 const URL = '/api/drawings'
 
