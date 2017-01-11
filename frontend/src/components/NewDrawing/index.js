@@ -1,7 +1,23 @@
-import React, { Component } from 'react'
-import styled, {css} from 'styled-components'
+import React, { PropTypes, Component } from 'react'
+import { newDrawing } from 'controllers/drawing'
 
 class NewDrawing extends Component {
+
+  constructor(props, context) {
+    super(props, context)
+
+    this.state = {
+      imageData: null
+    }
+  }
+
+  componentDidMount() {
+    newDrawing().then((res) => {
+      let id = res.data.drawingId
+      this.context.router.push(`/drawings/${id}`)
+    })
+  }
+
   render() {
     return (
       <div>
@@ -9,6 +25,10 @@ class NewDrawing extends Component {
       </div>
     )
   }
+}
+
+NewDrawing.contextTypes = {
+  router: PropTypes.object
 }
 
 export default NewDrawing
