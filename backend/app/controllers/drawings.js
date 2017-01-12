@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Drawing = mongoose.model('Drawing')
 
 exports.new = function (req, res) {
-  let drawing = new Drawing;
+  const width = req.params.width
+  const height = req.params.height
+  let drawing = new Drawing
+  drawing.width = width
+  drawing.height = height
   drawing.save((err, d) => {
     if(err) return res.send(err)
     res.json({

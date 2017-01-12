@@ -13,8 +13,10 @@ describe('Drawings', () => {
   })
 
   it('should return an id for a new drawing', () => {
+    const width = 2
+    const height = 2
     return request
-      .get(`${URL}`)
+      .get(`${URL}/${width}/${height}`)
       .then((res) => {
         expect(() => id = res.body.drawingId).toNotThrow()
         expect(id).toExist()

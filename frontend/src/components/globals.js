@@ -14,3 +14,9 @@ export const fonts = {
   pre: 'Consolas, Liberation Mono, Menlo, Courier, monospace',
   quote: 'Georgia, serif'
 };
+
+export const baseFontSize = 16
+
+export const maxContainerWidth = 960
+
+export const maxContentWidth = maxContainerWidth - (2 * 16)

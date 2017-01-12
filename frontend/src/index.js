@@ -11,7 +11,7 @@ render((
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
       <Route path="/new" component={NewDrawing}/>
-      <Route path="/drawings/:id" component={Drawing}/>
+      <Route path="/drawings/:id/:xPos/:yPos" component={Drawing}/>
     </Route>
   </Router>
 ), document.getElementById('container'))
