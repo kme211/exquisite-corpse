@@ -3,6 +3,7 @@ import styled, {css} from 'styled-components'
 import { saveDrawing, getDrawing } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
+import { getAdjacentPositions } from 'utils'
 
 class Drawing extends Component {
 
@@ -35,18 +36,6 @@ class Drawing extends Component {
     })
   }
   
-  getAdjacentPositions(pos) {
-    const [ x, y ] = pos
-    let adjacentPositions = [
-      [x - 1, y], 
-      [x + 1, y], 
-      [x, y - 1], 
-      [x, y + 1]
-    ]
-    return adjacentPositions
-      .filter(position => position.every(num => num >= 0))
-  }
-  
   positionIsAdjacent(pos, adjacentPositions) {
     const posStr = pos.join(',')
     const adjacentPositionStrings = adjacentPositions.map(pos => pos.join(','))
@@ -57,7 +46,7 @@ class Drawing extends Component {
   }
   
   getAdjacentData(currentPos, canvasData) {
-    let adjacentPositions = this.getAdjacentPositions(currentPos)
+    let adjacentPositions = getAdjacentPositions(currentPos)
     return canvasData
       .map(data => {
         let adjacentPosition
