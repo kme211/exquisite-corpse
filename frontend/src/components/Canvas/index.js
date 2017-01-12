@@ -138,7 +138,7 @@ class Canvas extends React.Component {
             return (
               <SecretImg 
                 key={`image-${data.pos}`} 
-                pos={data.pos}>
+                pos={data.adjacentPosition}>
                 <img alt="secret" src={data.image}/>
               </SecretImg>
             )

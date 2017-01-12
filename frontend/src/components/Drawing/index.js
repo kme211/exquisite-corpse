@@ -15,7 +15,7 @@ class Drawing extends Component {
       image: null,
       scale: null,
       pos: [],
-      adjacentData: []
+      canvasData: []
     }
     this.handleStopDraw = this.handleStopDraw.bind(this)
     this.handleSave = this.handleSave.bind(this)
@@ -26,11 +26,11 @@ class Drawing extends Component {
     getDrawing(id).then((res) => {
       const drawing = res.data
       const pos = [xPos, yPos]
-      const adjacentData = this.getAdjacentData(pos, drawing)
+      const canvasData = this.getAdjacentData(pos, drawing.canvasData)
       this.setState({
         id: id,
         pos: pos,
-        adjacentData: adjacentData
+        canvasData: canvasData
       })
     })
   }
@@ -56,18 +56,20 @@ class Drawing extends Component {
     return false
   }
   
-  getAdjacentData(currentPos, drawing) {
-    console.log('getAdjacentData')
+  getAdjacentData(currentPos, canvasData) {
     let adjacentPositions = this.getAdjacentPositions(currentPos)
-    return drawing.canvasData
-      .filter(data => this.positionIsAdjacent(data.pos, adjacentPositions))
+    return canvasData
       .map(data => {
-        let pos
-        if(data.pos[0] < currentPos[0]) pos = 'left'
-        if(data.pos[0] > currentPos[0]) pos = 'right'
-        if(data.pos[1] < currentPos[1]) pos = 'top'
-        if(data.pos[1] > currentPos[1]) pos = 'bottom'
-        return Object.assign({}, data, { pos })
+        let adjacentPosition
+        if(this.positionIsAdjacent(data.pos, adjacentPositions)) {
+          if(data.pos[0] < currentPos[0]) adjacentPosition = 'left'
+          if(data.pos[0] > currentPos[0]) adjacentPosition = 'right'
+          if(data.pos[1] < currentPos[1]) adjacentPosition = 'top'
+          if(data.pos[1] > currentPos[1]) adjacentPosition = 'bottom'
+        } else {
+          adjacentPosition = null
+        }
+        return Object.assign({}, data, { adjacentPosition: adjacentPosition })
       })
   }
 
@@ -96,7 +98,7 @@ class Drawing extends Component {
 
           <Canvas
             position={this.state.pos}
-            adjacentData={this.state.adjacentData}
+            adjacentData={this.state.canvasData.filter(data => data.adjacentPosition)}
             disabled={this.state.saved}
             onStopDraw={this.handleStopDraw}/>
 
