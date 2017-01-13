@@ -4,8 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "webpack-dev-server -d --config webpack.config.dev.js --hot --inline --history-api-fallback --port 4000"
+  },
+  "jest": {
+    "moduleDirectories": [
+      "src",
+      "node_modules"
+    ]
   },
   "author": "Keari Eggers <kungfu.keari@gmail.com>",
   "repository": "kme211/exquisite-corpse",

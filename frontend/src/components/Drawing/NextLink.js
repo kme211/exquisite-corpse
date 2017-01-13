@@ -6,9 +6,9 @@ const Wrapper = styled.div`
   text-align: center;
 `
 
-const NextLink = (pos) => {
+const NextLink = ({ pos }) => {
   let href = window.location.href.split('/').slice(0, -2).concat(...pos).join('/')
-  return <Wrapper>Link: {href}</Wrapper>
+  return <Wrapper>{href}</Wrapper>
 }
 
 NextLink.propTypes = {

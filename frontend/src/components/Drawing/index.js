@@ -5,7 +5,13 @@ import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
 import Saved from './Saved'
-import { getAdjacentPositions } from 'utils'
+import { getAdjacentPositions, isPositionAdjacent } from 'utils'
+
+const STATUS = {
+  SAVED: 'saved',
+  SAVING: 'saving',
+  NORMAL: 'normal'
+}
 
 class Drawing extends Component {
 
@@ -14,14 +20,14 @@ class Drawing extends Component {
 
     this.state = {
       id: '',
-      saved: false,
+      status: STATUS.NORMAL,
       image: null,
       scale: null,
       pos: [],
       width: 0,
       height: 0,
       canvasData: [],
-      nextPos: null
+      nextPos: []
     }
     this.handleStopDraw = this.handleStopDraw.bind(this)
     this.handleSave = this.handleSave.bind(this)
@@ -44,21 +50,11 @@ class Drawing extends Component {
     })
   }
   
-  positionIsAdjacent(pos, adjacentPositions) {
-    const posStr = pos.join(',')
-    const adjacentPositionStrings = adjacentPositions.map(pos => pos.join(','))
-    for(let i = 0; i < adjacentPositionStrings.length; i++) {
-      if(posStr === adjacentPositionStrings[i]) return true
-    }
-    return false
-  }
-  
   getAdjacentData(currentPos, canvasData) {
-    let adjacentPositions = getAdjacentPositions(currentPos)
     return canvasData
       .map(data => {
         let adjacentPosition
-        if(this.positionIsAdjacent(data.pos, adjacentPositions)) {
+        if(isPositionAdjacent(currentPos, data.pos)) {
           if(data.pos[0] < currentPos[0]) adjacentPosition = 'left'
           if(data.pos[0] > currentPos[0]) adjacentPosition = 'right'
           if(data.pos[1] < currentPos[1]) adjacentPosition = 'top'
@@ -75,6 +71,7 @@ class Drawing extends Component {
   }
   
   handleCellClick(e) {
+    console.log('handleCellClick')
     const { x, y } = e.target.dataset
     const nextPos = [parseInt(x), parseInt(y)]
     this.setState({ nextPos })
@@ -82,6 +79,7 @@ class Drawing extends Component {
 
   handleSave(e) {
     console.log('save')
+    this.setState({ status: STATUS.SAVING })
     const { id, pos } = this.state
     saveDrawing({
       id: id,
@@ -91,12 +89,13 @@ class Drawing extends Component {
         image: this.state.image
       }
     }).then(() => {
-      this.setState({ saved: true })
+      this.setState({ status: STATUS.SAVED })
     })
   }
 
   render() {
-    const { pos, nextPos, canvasData, saved, width, height } = this.state
+    const { pos, nextPos, canvasData, status, width, height } = this.state
+    const canvasIsDisabled = status === STATUS.SAVED || status === STATUS.SAVING
     return (
       <div>
           <h1>Drawing</h1>
@@ -104,10 +103,10 @@ class Drawing extends Component {
           <Canvas
             position={pos}
             adjacentData={canvasData.filter(data => data.adjacentPosition)}
-            disabled={saved}
+            disabled={canvasIsDisabled}
             onStopDraw={this.handleStopDraw}/>
 
-          {saved ?
+          {status === STATUS.SAVED ?
             <Saved
               width={width}
               height={height}
@@ -118,7 +117,7 @@ class Drawing extends Component {
             <Button
               width="100%"
               onClick={this.handleSave}>
-              Save
+              {status === STATUS.SAVING ? 'Saving...' : 'Save'}
             </Button>
           }
 

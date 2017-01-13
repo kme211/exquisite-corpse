@@ -2,6 +2,10 @@
 import React, { PropTypes } from 'react'
 import styled, { css } from 'styled-components'
 import isEqual from 'lodash/isEqual'
+import { colors } from 'components/globals'
+
+const gray = colors.grayscale[2]
+const red = colors.danger[0]
 
 const Wrapper = styled.div`
   margin: 0.5rem 0 1rem 0;
@@ -14,7 +18,7 @@ const Row = styled.div`
   justify-content: center;
 `
 const cellStyle = ({ enabled, selected, completed }) => css`
-  background: ${enabled ? (selected ? 'tomato' : (completed ? 'red' : 'white')) : 'gray'};
+  background: ${enabled ? (selected ? '#418C9F' : '#58B3D3') : (completed ? red : gray)};
   height: 40px;
   width: 40px;
   margin: 2px;
@@ -29,10 +33,10 @@ const Grid = ({ enabledCells, completedCells, height, width, handleCellClick, se
   for(let i = 0; i < height; i++) {
     const cells = []
     for(let n = 0; n < width; n++) {
-      const selected = selectedCellPos ? selectedCellPos[0] === n && selectedCellPos[1] === i : false
+      const selected = selectedCellPos.length ? selectedCellPos[0] === n && selectedCellPos[1] === i : false
       const enabled = enabledCells.some(cell => isEqual(cell, [n, i]))
-      console.log('completedCells', completedCells)
       const completed = completedCells ? completedCells.some(cell => isEqual(cell, [n, i])) : false
+      console.log('selected', selected, 'enabled', enabled, 'completed', completed)
       const cell = (
         <Cell 
           selected={enabled ? selected : false}
