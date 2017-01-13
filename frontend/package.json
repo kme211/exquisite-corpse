@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.config.dev.js --hot --inline --history-api-fallback --port 4000"
+    "start": "webpack-dev-server -d --config webpack.config.dev.js --hot --inline --history-api-fallback --port 4000"
   },
   "author": "Keari Eggers <kungfu.keari@gmail.com>",
   "repository": "kme211/exquisite-corpse",
@@ -23,12 +23,14 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.8.0",
+    "jest": "^18.1.0",
     "raw-loader": "^0.5.1",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "lodash": "^4.17.4",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-router": "^3.0.0",

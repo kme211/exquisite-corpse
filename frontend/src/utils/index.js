@@ -9,3 +9,13 @@ export const getAdjacentPositions = (pos) => {
   return adjacentPositions
     .filter(position => position.every(num => num >= 0))
 }
+
+export const getAllPositions = ({ height, width }) => {
+  const positions = []
+  for(let i = 0; i < height; i++) {
+    for(let n = 0; n < width; n++) {
+      positions.push([i, n])
+    }
+  }
+  return positions
+}

@@ -50,11 +50,9 @@ class Canvas extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps, nextState)
     if(this.state.canvasWidth !== nextState.canvasWidth) return true
     if(nextProps.adjacentData.length > 0) return true
     if(nextProps.position !== this.props.position) return true
-    console.log('dont update')
     return false
   }
   

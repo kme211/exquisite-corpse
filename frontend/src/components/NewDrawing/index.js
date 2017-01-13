@@ -1,9 +1,10 @@
 import React, { PropTypes, Component } from 'react'
 import { newDrawing } from 'controllers/drawing'
 import styled, { css } from 'styled-components'
-import Grid from './Grid'
+import Grid from 'components/common/Grid'
 import Button from 'components/common/Button'
 import SizeForm from './SizeForm'
+import { getAllPositions } from 'utils'
 
 class NewDrawing extends Component {
 
@@ -49,17 +50,18 @@ class NewDrawing extends Component {
   }
 
   render() {
+    const { height, width, sizeConfirmed } = this.state
     return (
       <div>
         <h1>New drawing</h1>
           
-        {!this.state.sizeConfirmed && <SizeForm handleValueChange={this.handleValueChange} width={this.state.width} height={this.state.height}/>}
-        {this.state.sizeConfirmed && <p>Choose the section you want to start with.</p>}
+        {!sizeConfirmed && <SizeForm handleValueChange={this.handleValueChange} width={width} height={height}/>}
+        {sizeConfirmed && <p>Choose the section you want to start with.</p>}
         
         <Grid 
-          width={this.state.width} 
-          height={this.state.height}
-          enabled={this.state.sizeConfirmed}
+          width={width} 
+          height={height}
+          enabledCells={sizeConfirmed ? getAllPositions({ height, width }) : []}
           handleCellClick={this.handleCellClick}
           selectedCellPos={this.state.selectedCellPos}
         />

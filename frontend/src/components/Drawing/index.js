@@ -3,6 +3,8 @@ import styled, {css} from 'styled-components'
 import { saveDrawing, getDrawing } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
+import Grid from 'components/common/Grid'
+import Saved from './Saved'
 import { getAdjacentPositions } from 'utils'
 
 class Drawing extends Component {
@@ -16,20 +18,26 @@ class Drawing extends Component {
       image: null,
       scale: null,
       pos: [],
-      canvasData: []
+      width: 0,
+      height: 0,
+      canvasData: [],
+      nextPos: null
     }
     this.handleStopDraw = this.handleStopDraw.bind(this)
     this.handleSave = this.handleSave.bind(this)
+    this.handleCellClick = this.handleCellClick.bind(this)
   }
 
   componentDidMount() {
     const { id, xPos, yPos } = this.props.params
     getDrawing(id).then((res) => {
       const drawing = res.data
-      const pos = [xPos, yPos]
+      const pos = [parseInt(xPos), parseInt(yPos)]
       const canvasData = this.getAdjacentData(pos, drawing.canvasData)
       this.setState({
         id: id,
+        width: drawing.width,
+        height: drawing.height,
         pos: pos,
         canvasData: canvasData
       })
@@ -65,8 +73,15 @@ class Drawing extends Component {
   handleStopDraw({ image, scale }) {
     this.setState({ image, scale })
   }
+  
+  handleCellClick(e) {
+    const { x, y } = e.target.dataset
+    const nextPos = [parseInt(x), parseInt(y)]
+    this.setState({ nextPos })
+  }
 
   handleSave(e) {
+    console.log('save')
     const { id, pos } = this.state
     saveDrawing({
       id: id,
@@ -81,22 +96,29 @@ class Drawing extends Component {
   }
 
   render() {
+    const { pos, nextPos, canvasData, saved, width, height } = this.state
     return (
       <div>
           <h1>Drawing</h1>
 
           <Canvas
-            position={this.state.pos}
-            adjacentData={this.state.canvasData.filter(data => data.adjacentPosition)}
-            disabled={this.state.saved}
+            position={pos}
+            adjacentData={canvasData.filter(data => data.adjacentPosition)}
+            disabled={saved}
             onStopDraw={this.handleStopDraw}/>
 
-          {this.state.saved ?
-            <h2>Saved!</h2> :
+          {saved ?
+            <Saved
+              width={width}
+              height={height}
+              pos={pos}
+              nextPos={nextPos}
+              canvasData={canvasData}
+              handleCellClick={this.handleCellClick}/> :
             <Button
               width="100%"
               onClick={this.handleSave}>
-              Save and Pass
+              Save
             </Button>
           }
 
