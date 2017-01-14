@@ -1,12 +1,7 @@
 
 import React, { PropTypes } from 'react'
 import styled from 'styled-components'
-
-const LabelWrapper = styled.label`
-  margin: 0.5rem 0;
-  display: block;
-  text-transform: uppercase;
-`
+import Label from 'components/common/Label'
 
 const InputWrapper = styled.input`
   width: 100%;
@@ -16,7 +11,7 @@ const InputWrapper = styled.input`
 const SizeForm = ({ width, height, handleValueChange }) => {
   return (
     <div>
-      <LabelWrapper htmlFor="width">Width</LabelWrapper>
+      <Label htmlFor="width">Width</Label>
       <InputWrapper
         type="range"
         name="width"
@@ -25,8 +20,8 @@ const SizeForm = ({ width, height, handleValueChange }) => {
         value={width}
         onChange={handleValueChange}
       />
-    
-    <LabelWrapper htmlFor="height">Height</LabelWrapper>
+
+    <Label htmlFor="height">Height</Label>
       <InputWrapper
         type="range"
         name="height"
