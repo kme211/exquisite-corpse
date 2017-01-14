@@ -4,13 +4,13 @@ import { saveDrawing, getDrawing } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
-import Saved from './Saved'
+import SavedModal from './SavedModal'
 import { getAdjacentPositions, isPositionAdjacent } from 'utils'
 
-const STATUS = {
-  SAVED: 'saved',
-  SAVING: 'saving',
-  NORMAL: 'normal'
+const SAVE_BUTTON_TEXT = {
+  SAVED: 'Saved!',
+  SAVING: 'Saving...',
+  NORMAL: 'Save'
 }
 
 class Drawing extends Component {
@@ -20,7 +20,8 @@ class Drawing extends Component {
 
     this.state = {
       id: '',
-      status: STATUS.NORMAL,
+      showSavedModal: false,
+      saveButtonText: SAVE_BUTTON_TEXT.NORMAL,
       image: null,
       scale: null,
       pos: [],
@@ -49,7 +50,7 @@ class Drawing extends Component {
       })
     })
   }
-  
+
   getAdjacentData(currentPos, canvasData) {
     return canvasData
       .map(data => {
@@ -69,7 +70,7 @@ class Drawing extends Component {
   handleStopDraw({ image, scale }) {
     this.setState({ image, scale })
   }
-  
+
   handleCellClick(e) {
     console.log('handleCellClick')
     const { x, y } = e.target.dataset
@@ -79,7 +80,10 @@ class Drawing extends Component {
 
   handleSave(e) {
     console.log('save')
-    this.setState({ status: STATUS.SAVING })
+    this.setState({
+      showSavedModal: true,
+      saveButtonText: SAVE_BUTTON_TEXT.SAVING
+    })
     const { id, pos } = this.state
     saveDrawing({
       id: id,
@@ -89,13 +93,13 @@ class Drawing extends Component {
         image: this.state.image
       }
     }).then(() => {
-      this.setState({ status: STATUS.SAVED })
+      this.setState({ saveButtonText: SAVE_BUTTON_TEXT.SAVED })
     })
   }
 
   render() {
-    const { pos, nextPos, canvasData, status, width, height } = this.state
-    const canvasIsDisabled = status === STATUS.SAVED || status === STATUS.SAVING
+    const { pos, nextPos, canvasData, saveButtonText, width, height, showSavedModal } = this.state
+    const disabled = saveButtonText !== SAVE_BUTTON_TEXT.NORMAL
     return (
       <div>
           <h1>Drawing</h1>
@@ -103,23 +107,24 @@ class Drawing extends Component {
           <Canvas
             position={pos}
             adjacentData={canvasData.filter(data => data.adjacentPosition)}
-            disabled={canvasIsDisabled}
+            disabled={disabled}
             onStopDraw={this.handleStopDraw}/>
 
-          {status === STATUS.SAVED ?
-            <Saved
+            <SavedModal
+              showSavedModal={showSavedModal}
               width={width}
               height={height}
               pos={pos}
               nextPos={nextPos}
               canvasData={canvasData}
-              handleCellClick={this.handleCellClick}/> :
+              handleCellClick={this.handleCellClick}/>
+
             <Button
               width="100%"
-              onClick={this.handleSave}>
-              {status === STATUS.SAVING ? 'Saving...' : 'Save'}
+              onClick={this.handleSave}
+              disabled={disabled}>
+              {saveButtonText}
             </Button>
-          }
 
       </div>
     )
