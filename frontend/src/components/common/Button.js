@@ -1,20 +1,22 @@
 import React, {PropTypes} from 'react'
 import styled, {css} from 'styled-components'
+import { colors } from 'components/globals'
 
-const styles = ({ width }) => css`
+const styles = ({ width, disabled }) => css`
   width: ${width};
   box-sizing: border-box;
   font-family: inherit;
   font-size: 1rem;
-  background: #58B3D3;
+  background: ${disabled ? colors.grayscale[2] : colors.primary[2]};
   border: none;
   color: white;
   padding: 1rem;
   transition: background 0.4s;
-  cursor: pointer;
+  cursor: ${disabled ? 'auto' : 'pointer'};
+  pointer-events: ${disabled ? 'none' : 'auto'}
 
   &:hover {
-    background: #418C9F;
+    background: ${colors.primary[1]};
   }
 `
 const Wrapper = styled.button`${styles}`
