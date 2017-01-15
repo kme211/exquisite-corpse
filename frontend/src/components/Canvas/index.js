@@ -17,8 +17,8 @@ const secretImgStyles = ({ pos }) => css`
   overflow: hidden;
   pointer-events: none;
   left: ${pos === 'left' ? 0 : 'auto'};
-  right: ${pos === 'right' ? 0 : 'auto'};
-  top: ${pos === 'top' ? 0 : 'auto'};
+  right: ${pos === 'right' ? '25px' : 'auto'};
+  top: ${pos === 'top' || pos === 'left' || pos === 'right' ? 0 : 'auto'};
   bottom: ${pos === 'bottom' ? 0 : 'auto'};
   height: ${pos === 'top' || pos === 'bottom' ? '25px' : '100%'};
   width: ${pos === 'left' || pos === 'right' ? '25px' : '100%'};
@@ -26,6 +26,8 @@ const secretImgStyles = ({ pos }) => css`
     position: absolute;
     top: ${pos === 'bottom' ? 0 : 'auto'};
     bottom: ${pos === 'top' ? 0 : 'auto'};
+    right: ${pos === 'left' ? 0 : 'auto'};
+    left: ${pos === 'right' ? 0 : 'auto'};
   }
 `
 
@@ -53,9 +55,10 @@ class Canvas extends React.Component {
     if(this.state.canvasWidth !== nextState.canvasWidth) return true
     if(nextProps.adjacentData.length > 0) return true
     if(nextProps.position !== this.props.position) return true
+    console.log('no it should not update')
     return false
   }
-  
+
   getTouchPos(e) {
     const touch = e.nativeEvent.touches[0]
     const target = e.nativeEvent.target
@@ -73,9 +76,11 @@ class Canvas extends React.Component {
   }
 
   stopDraw(e) {
+    console.warn('stopDraw')
     this.setState({
       isDrawing: false
     })
+
     if(e.type === 'mouseout') return
     const image = this.canvas.toDataURL()
     const scale = this.state.scale
@@ -119,7 +124,7 @@ class Canvas extends React.Component {
   render() {
     return (
     <Wrapper width={this.state.canvasWidth}>
-      
+
       <canvas
         ref={(canvas) => { this.initializeCtx(canvas) }}
         onMouseMove={this.draw}
@@ -129,13 +134,13 @@ class Canvas extends React.Component {
         onMouseUp={this.stopDraw}
         onTouchEnd={this.stopDraw}
         onMouseOut={this.stopDraw}/>
-      
-        { this.props.adjacentData && 
+
+        { this.props.adjacentData &&
           this.props.adjacentData
           .map(data => {
             return (
-              <SecretImg 
-                key={`image-${data.pos}`} 
+              <SecretImg
+                key={`image-${data.pos}`}
                 pos={data.adjacentPosition}>
                 <img alt="secret" src={data.image}/>
               </SecretImg>
