@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/cross-env NODE_ENV=test mocha --reporter spec --require babel-register",
-    "start": "./node_modules/.bin/cross-env NODE_ENV=development nodemon server.js"
+    "start": "./node_modules/.bin/cross-env NODE_ENV=development nodemon server.js",
+    "worker": "./node_modules/.bin/cross-env NODE_ENV=development nodemon worker.js"
   },
   "author": "Keari Eggers <kungfu.keari@gmail.com>",
   "repository": "kme211/exquisite-corpse",
@@ -19,13 +20,17 @@
     "supertest-as-promised": "^4.0.2"
   },
   "dependencies": {
+    "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
     "cors": "^2.8.1",
     "cross-env": "^3.1.4",
+    "data-uri-to-buffer": "0.0.4",
     "dotenv": "^2.0.0",
     "ejs": "^2.5.5",
     "express": "^4.14.0",
+    "images": "^3.0.0",
     "lodash": "^4.17.4",
-    "mongoose": "^4.7.5"
+    "mongoose": "^4.7.5",
+    "monq": "^0.3.6"
   }
 }

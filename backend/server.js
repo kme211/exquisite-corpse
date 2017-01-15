@@ -2,12 +2,15 @@ require('dotenv').config();
 const fs = require('fs')
 const join = require('path').join
 const express = require('express')
-const mongoose = require('mongoose')
 const config = require('./config')
+const db = require('./db')
 
 const models = join(__dirname, 'app/models')
 const port = process.env.PORT || 3000;
 const app = express()
+
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', console.log.bind(console, 'connected to mongodb'))
 
 // Bootstrap models
 fs.readdirSync(models)
@@ -19,19 +22,12 @@ fs.readdirSync(models)
 require('./config/express')(app)
 require('./config/routes')(app)
 
-connect()
-  .on('error', console.log)
-  .on('disconnected', connect)
-  .once('open', listen)
+db.once('open', listen)
 
 function listen () {
   if (app.get('env') === 'test') return;
   app.listen(port)
   console.log('Exquisite Corpse app started on port ' + port)
-}
-
-function connect() {
-  return mongoose.connect(`mongodb://${config.db_user}:${config.db_pass}@${config.db_host}`).connection
 }
 
 module.exports = app
