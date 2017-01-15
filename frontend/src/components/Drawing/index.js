@@ -69,7 +69,9 @@ class Drawing extends Component {
   }
 
   handleStopDraw({ image, scale }) {
-    this.setState({ image, scale })
+    this.setState({ image, scale }, () => {
+      console.log('image state updated')
+    })
   }
 
   handleCellClick(e) {
@@ -83,26 +85,29 @@ class Drawing extends Component {
     console.log('save')
     this.setState({
       saveButtonText: SAVE_BUTTON_TEXT.SAVING
-    })
-    const { id, pos } = this.state
-    saveDrawing({
-      id: id,
-      canvasData: {
-        contributor: {
-          email: getUser().email,
-          initials: getUser().initials
-        },
-        pos: pos,
-        scale: this.state.scale,
-        image: this.state.image
-      }
-    }).then((res) => {
-      this.setState({
-        saveButtonText: SAVE_BUTTON_TEXT.SAVED,
-        canvasData: res.data,
-        showSavedModal: true
+    }, () => {
+      console.log('saveButtonText updated')
+      const { id, pos } = this.state
+      saveDrawing({
+        id: id,
+        canvasData: {
+          contributor: {
+            email: getUser().email,
+            initials: getUser().initials
+          },
+          pos: pos,
+          scale: this.state.scale,
+          image: this.state.image
+        }
+      }).then((res) => {
+        this.setState({
+          saveButtonText: SAVE_BUTTON_TEXT.SAVED,
+          canvasData: res.data,
+          showSavedModal: true
+        })
       })
     })
+
   }
 
   render() {
