@@ -51,7 +51,12 @@ class SavedModal extends Component {
   render() {
     const { width, height, pos, nextPos, handleCellClick, canvasData } = this.props
     const enabledCells = getAdjacentPositions(pos).filter(pos => !canvasData.some(data => isEqual(pos, data.pos)))
-    const completedCells = canvasData.map(data => data.pos).concat(pos)
+    const completedCells = canvasData.map(data => {
+      return {
+        pos: data.pos,
+        content: data.contributor
+      }
+    })
     console.log('nextPos', nextPos, 'enabledCells', enabledCells, 'completedCells', completedCells)
 
     return (

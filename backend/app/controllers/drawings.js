@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Drawing = mongoose.model('Drawing')
+const omit = require('lodash/omit')
 
 exports.new = function (req, res) {
   const width = req.params.width
@@ -29,11 +30,9 @@ exports.save = function (req, res) {
     if(err) return res.send(err)
     if(!drawing) res.status(404).send('No drawing with that ID')
     drawing.canvasData.push(req.body.canvasData)
-    drawing.save((err, d) => {
+    drawing.save((err, drawing) => {
       if(err) return res.send(err)
-      res.json({
-        id: id
-      })
+      res.json(drawing.canvasData.map(data => Object.assign({}, data, { contributor: data.contributor.initials })))
     })
 
   })

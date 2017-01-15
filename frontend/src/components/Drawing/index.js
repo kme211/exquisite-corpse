@@ -6,6 +6,7 @@ import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
 import SavedModal from './SavedModal'
 import { getAdjacentPositions, isPositionAdjacent } from 'utils'
+import { getUser } from 'controllers/user'
 
 const SAVE_BUTTON_TEXT = {
   SAVED: 'Saved!',
@@ -81,19 +82,26 @@ class Drawing extends Component {
   handleSave(e) {
     console.log('save')
     this.setState({
-      showSavedModal: true,
       saveButtonText: SAVE_BUTTON_TEXT.SAVING
     })
     const { id, pos } = this.state
     saveDrawing({
       id: id,
       canvasData: {
+        contributor: {
+          email: getUser().email,
+          initials: getUser().initials
+        },
         pos: pos,
         scale: this.state.scale,
         image: this.state.image
       }
-    }).then(() => {
-      this.setState({ saveButtonText: SAVE_BUTTON_TEXT.SAVED })
+    }).then((res) => {
+      this.setState({
+        saveButtonText: SAVE_BUTTON_TEXT.SAVED,
+        canvasData: res.data,
+        showSavedModal: true
+      })
     })
   }
 
