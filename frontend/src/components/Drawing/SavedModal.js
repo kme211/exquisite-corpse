@@ -72,7 +72,7 @@ class SavedModal extends Component {
             completedCells={completedCells}
           />
           <NextLink pos={nextPos}/>
-          <CloseButton onClick={this.handleCloseButtonClick}><Icon icon="cross" size="20"/></CloseButton>
+          <CloseButton onClick={this.handleCloseButtonClick}><Icon icon="cross" size={20}/></CloseButton>
       </Modal>
     )
   }
