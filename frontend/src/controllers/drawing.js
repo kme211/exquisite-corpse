@@ -12,3 +12,16 @@ export function saveDrawing(data) {
 export function getDrawing(id) {
   return axios.get(`${URL}/${id}`)
 }
+
+export function addDrawingToLibrary(id) {
+  let appData = JSON.parse(window.localStorage.getItem('exquisite-corpse'))
+  if(appData.drawings.find(drawingId => drawingId === id)) return
+  appData = JSON.stringify(Object.assign({}, appData, { drawings: appData.drawings.concat(id) }))
+  window.localStorage.setItem('exquisite-corpse', appData)
+}
+
+export function getAllDrawings() {
+  console.log('get all drawings')
+  let appData = JSON.parse(window.localStorage.getItem('exquisite-corpse'))
+  return appData.drawings
+}

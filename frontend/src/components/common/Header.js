@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
 import styled, {css} from 'styled-components'
 import Icon from 'components/Icon'
-import { Link } from 'react-router'
+import { IndexLink, Link } from 'react-router'
 
 const Wrapper = styled.header`
   height: 50px;
@@ -47,12 +47,17 @@ text-decoration: none;
 }
 `
 
+const StyledIndexLink = styled(IndexLink)`
+  color: white;
+  text-decoration: none;
+`
+
 const Header = (props) => {
   return (
     <Wrapper>
       <div>
         <ButtonWrapper><Icon icon="menu"/></ButtonWrapper>
-        <span>exquisite-corpse</span>
+        <span><StyledIndexLink to="/">exquisite-corpse</StyledIndexLink></span>
       </div>
       <div>
         <StyledLink to="/new">New drawing</StyledLink>

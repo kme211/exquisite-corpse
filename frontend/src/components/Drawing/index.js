@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled, {css} from 'styled-components'
-import { saveDrawing, getDrawing } from 'controllers/drawing'
+import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
@@ -38,6 +38,7 @@ class Drawing extends Component {
 
   componentDidMount() {
     const { id, xPos, yPos } = this.props.params
+    addDrawingToLibrary(id)
     getDrawing(id).then((res) => {
       const drawing = res.data
       const pos = [parseInt(xPos), parseInt(yPos)]

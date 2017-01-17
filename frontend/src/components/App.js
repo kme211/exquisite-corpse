@@ -36,15 +36,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (storageAvailable('localStorage')) {
-      if(window.localStorage.getItem('exquisite-corpse')) {
-        console.log('app data is available')
-      } else {
-        this.context.router.push('/welcome')
-      }
-    }
-    else {
-      // i don't know yet
+    if (!storageAvailable('localStorage')) {
+      //this.context.router.push('/welcome') // show message about localStorage
     }
   }
 
