@@ -70,6 +70,7 @@ class Drawing extends Component {
   }
 
   handleStopDraw({ image, scale }) {
+    console.log('handleStopDraw')
     this.setState({ image, scale }, () => {
       console.log('image state updated')
     })

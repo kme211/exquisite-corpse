@@ -1,7 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import styled, {css} from 'styled-components'
-import { getAllDrawings } from 'controllers/drawing'
+import { getAllDrawings, getDrawing } from 'controllers/drawing'
 import { getUser } from 'controllers/user'
+import ListItem from './ListItem'
+
+const List = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 class Home extends Component {
   constructor(props) {
@@ -17,16 +24,22 @@ class Home extends Component {
   }
   
   fetchDrawings() {
-    this.setState({ drawings: getAllDrawings() })
+    getAllDrawings().forEach(id => {
+      getDrawing(id).then(res => {
+        this.setState({
+          drawings: this.state.drawings.concat(res.data)
+        })
+      })
+    })
   }
   
   render() {
     return (
       <div>
         <h1>Hi, {getUser().firstName}!</h1>
-        <ul>
-          {this.state.drawings.map(id => <li key={id}>{id}</li>)}
-        </ul>
+        <List>
+          {this.state.drawings.map(drawing => <ListItem key={drawing.id} {...drawing} />)}
+        </List>
       </div>
     )
   }
