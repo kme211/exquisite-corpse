@@ -7,6 +7,7 @@ import Grid from 'components/common/Grid'
 import SavedModal from './SavedModal'
 import { getAdjacentPositions, isPositionAdjacent } from 'utils'
 import { getUser } from 'controllers/user'
+import isEqual from 'lodash/isEqual'
 
 const SAVE_BUTTON_TEXT = {
   SAVED: 'Saved!',
@@ -52,16 +53,22 @@ class Drawing extends Component {
       })
     })
   }
+  
+  mapPosition(currentPos, pos) {
+    let adjacentPosition
+    if(pos[0] < currentPos[0]) adjacentPosition = 'left'
+    if(pos[0] > currentPos[0]) adjacentPosition = 'right'
+    if(pos[1] < currentPos[1]) adjacentPosition = 'top'
+    if(pos[1] > currentPos[1]) adjacentPosition = 'bottom'
+    return adjacentPosition
+  }
 
   getAdjacentData(currentPos, canvasData) {
     return canvasData
       .map(data => {
         let adjacentPosition
         if(isPositionAdjacent(currentPos, data.pos)) {
-          if(data.pos[0] < currentPos[0]) adjacentPosition = 'left'
-          if(data.pos[0] > currentPos[0]) adjacentPosition = 'right'
-          if(data.pos[1] < currentPos[1]) adjacentPosition = 'top'
-          if(data.pos[1] > currentPos[1]) adjacentPosition = 'bottom'
+          adjacentPosition = this.mapPosition(currentPos, data.pos)
         } else {
           adjacentPosition = null
         }
@@ -115,6 +122,9 @@ class Drawing extends Component {
   render() {
     const { pos, nextPos, canvasData, saveButtonText, width, height, showSavedModal } = this.state
     const disabled = saveButtonText !== SAVE_BUTTON_TEXT.NORMAL
+    const borders = getAdjacentPositions(pos)
+      .filter(coords => !canvasData.find(data => isEqual(data.pos, coords)))
+      .map(p => this.mapPosition(pos, p))
     return (
       <div>
           <h1>Drawing</h1>
@@ -123,6 +133,7 @@ class Drawing extends Component {
             position={pos}
             adjacentData={canvasData.filter(data => data.adjacentPosition)}
             disabled={disabled}
+            borders={borders}
             onStopDraw={this.handleStopDraw}/>
 
             <SavedModal

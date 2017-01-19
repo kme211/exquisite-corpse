@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 const styles = ({ disabled, width }) => css`
   position: relative;
   width: ${width};
+  height: ${width};
   background: white;
   margin: 1em auto;
   box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
@@ -16,10 +17,10 @@ const secretImgStyles = ({ pos }) => css`
   position: absolute;
   overflow: hidden;
   pointer-events: none;
-  left: ${pos === 'left' ? 0 : 'auto'};
+  left: ${pos === 'left' ? '-25px' : 'auto'};
   right: ${pos === 'right' ? '25px' : 'auto'};
-  top: ${pos === 'top' || pos === 'left' || pos === 'right' ? 0 : 'auto'};
-  bottom: ${pos === 'bottom' ? 0 : 'auto'};
+  top: ${pos === 'top' ? '-25px' : (pos === 'left' || pos === 'right' ? 0 : 'auto')};
+  bottom: ${pos === 'bottom' ? '-25px' : 'auto'};
   height: ${pos === 'top' || pos === 'bottom' ? '25px' : '100%'};
   width: ${pos === 'left' || pos === 'right' ? '25px' : '100%'};
   & > img {
@@ -55,7 +56,6 @@ class Canvas extends React.Component {
     if(this.state.canvasWidth !== nextState.canvasWidth) return true
     if(nextProps.adjacentData.length > 0) return true
     if(nextProps.position !== this.props.position) return true
-    console.log('no it should not update')
     return false
   }
 
@@ -122,6 +122,7 @@ class Canvas extends React.Component {
   }
 
   render() {
+    console.log('borders', this.props.borders)
     return (
     <Wrapper width={this.state.canvasWidth}>
 
@@ -134,6 +135,9 @@ class Canvas extends React.Component {
         onMouseUp={this.stopDraw}
         onTouchEnd={this.stopDraw}
         onMouseOut={this.stopDraw}/>
+      
+      { this.props.borders.length && 
+        this.props.borders.map(border => <div>{border}</div>)}
 
         { this.props.adjacentData &&
           this.props.adjacentData
