@@ -28,3 +28,12 @@ export const isPositionAdjacent = (pos1, pos2) => {
   const isEqualToPos2 = curry(isEqual)(pos2)
   return adjacentPositions.some(isEqualToPos2)
 }
+
+export const mapPosition = (currentPos, pos) => {
+    let adjacentPosition
+    if(pos[0] < currentPos[0]) adjacentPosition = 'left'
+    if(pos[0] > currentPos[0]) adjacentPosition = 'right'
+    if(pos[1] < currentPos[1]) adjacentPosition = 'top'
+    if(pos[1] > currentPos[1]) adjacentPosition = 'bottom'
+    return adjacentPosition
+  }
