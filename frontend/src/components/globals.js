@@ -20,3 +20,9 @@ export const baseFontSize = 16
 export const maxContainerWidth = 960
 
 export const maxContentWidth = maxContainerWidth - (2 * 16)
+
+export const STATUS = {
+  COMPLETE: 'complete',
+  AVAILABLE: 'available',
+  PENDING: 'pending'
+}
