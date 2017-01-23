@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import styled, {css} from 'styled-components'
-import { getAllDrawings, getDrawing } from 'controllers/drawing'
-import { getUser } from 'controllers/user'
+import AuthService from 'utils/AuthService'
 import ListItem from './ListItem'
 
 const List = styled.ul`
@@ -13,36 +12,51 @@ const List = styled.ul`
 class Home extends Component {
   constructor(props) {
     super(props)
-    
+
     this.state = {
-      drawings: []
+      profile: props.auth.getProfile()
     }
-  }
-  
-  componentDidMount() {
-    this.fetchDrawings()
-  }
-  
-  fetchDrawings() {
-    getAllDrawings().forEach(id => {
-      getDrawing(id).then(res => {
-        this.setState({
-          drawings: this.state.drawings.concat(res.data)
-        })
-      })
+    props.auth.on('profile_updated', (newProfile) => {
+      this.setState({profile: newProfile})
     })
   }
-  
+
+  // componentDidMount() {
+  //   this.fetchDrawings()
+  // }
+  //
+  // fetchDrawings() {
+  //   getAllDrawings().forEach(id => {
+  //     getDrawing(id).then(res => {
+  //       this.setState({
+  //         drawings: this.state.drawings.concat(res.data)
+  //       })
+  //     })
+  //   })
+  // }
+
   render() {
+     const { profile } = this.state
+    //  const ListOfDrawings = (
+    //    <List>
+    //      {this.state.drawings.map(drawing => <ListItem key={drawing.id} {...drawing} />)}
+    //    </List>
+    //  )
     return (
       <div>
-        <h1>Hi, {getUser().firstName}!</h1>
-        <List>
-          {this.state.drawings.map(drawing => <ListItem key={drawing.id} {...drawing} />)}
-        </List>
+        <h1>Hi, {profile.name}!</h1>
+
       </div>
     )
   }
+}
+
+Home.propTypes = {
+  auth: PropTypes.instanceOf(AuthService)
+}
+
+Home.contextTypes = {
+  router: PropTypes.object
 }
 
 export default Home
