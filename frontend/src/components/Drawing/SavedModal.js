@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual'
 import Icon from 'components/Icon'
 import Modal from 'components/common/Modal'
 import styled, {css} from 'styled-components'
+import { STATUS } from 'components/globals'
 
 const CloseButton = styled.button`
   position: absolute;
@@ -50,11 +51,17 @@ class SavedModal extends Component {
 
   render() {
     const { width, height, pos, nextPos, handleCellClick, canvasData } = this.props
-    const enabledCells = getAdjacentPositions(pos).filter(pos => !canvasData.some(data => isEqual(pos, data.pos)))
-    const completedCells = canvasData.map(data => {
+    const adjacentPositions = getAdjacentPositions(pos)
+    //const enabledCells = getAdjacentPositions(pos).filter(pos => !canvasData.some(data => isEqual(pos, data.pos)))
+    const sectionIsAvailable = (section) => section.status === STATUS.AVAILABLE
+    const sectionIsAdjacent = (section) => adjacentPositions.some(position => isEqual(position, section.pos))
+    const enabledCells = canvasData.filter(sectionIsAvailable).filter(sectionIsAdjacent)
+    const sectionIsComplete = (section) => section.status === STATUS.COMPLETE
+  
+    const completedCells = canvasData.filter(sectionIsComplete).map(section => {
       return {
-        pos: data.pos,
-        content: data.contributor
+        pos: section.pos,
+        content: section.contributor
       }
     })
     console.log('nextPos', nextPos, 'enabledCells', enabledCells, 'completedCells', completedCells)

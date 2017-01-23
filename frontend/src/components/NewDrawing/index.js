@@ -61,7 +61,9 @@ class NewDrawing extends Component {
         <Grid 
           width={width} 
           height={height}
-          enabledCells={sizeConfirmed ? getAllPositions({ height, width }) : []}
+          enabledCells={sizeConfirmed ? getAllPositions({ height, width }).map(pos => {
+            return { pos }
+          }) : []}
           handleCellClick={this.handleCellClick}
           selectedCellPos={this.state.selectedCellPos}
         />

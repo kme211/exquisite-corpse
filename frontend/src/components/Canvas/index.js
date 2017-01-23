@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import styled, { css } from 'styled-components'
+import { colors } from 'components/globals'
 
 const styles = ({ disabled, width }) => css`
   position: relative;
@@ -31,6 +32,23 @@ const secretImgStyles = ({ pos }) => css`
     left: ${pos === 'right' ? 0 : 'auto'};
   }
 `
+
+const borderStyles = ({ pos }) => css`
+  position: absolute;
+  height: ${pos === 'top' || pos === 'bottom' ? '25px' : '100%'};
+  width: ${pos === 'left' || pos === 'right' ? '25px' : '100%'};
+  left: ${pos === 'left' ? 0 : 'auto'};
+  right: ${pos === 'right' ? 0 : 'auto'};
+  top: ${pos === 'top' || pos === 'left' || pos === 'right' ? 0 : 'auto'};
+  bottom: ${pos === 'bottom' ? 0 : 'auto'};
+  border-top: ${pos === 'bottom' ? `1px dashed ${colors.primary[2]}` : 'none'};
+  border-bottom: ${pos === 'top' ? `1px dashed ${colors.primary[2]}` : 'none'};
+  border-left: ${pos === 'right' ? `1px dashed ${colors.primary[2]}` : 'none'};
+  border-right: ${pos === 'left' ? `1px dashed ${colors.primary[2]}` : 'none'};
+  pointer-events: none;
+`
+
+const BorderBox = styled.div`${borderStyles}`
 
 const SecretImg = styled.div`${secretImgStyles}`
 
@@ -137,7 +155,7 @@ class Canvas extends React.Component {
         onMouseOut={this.stopDraw}/>
       
       { this.props.borders.length && 
-        this.props.borders.map(border => <div>{border}</div>)}
+        this.props.borders.map(border => <BorderBox key={`border-${border.adjacentPosition}`} pos={border.adjacentPosition} />)}
 
         { this.props.adjacentData &&
           this.props.adjacentData

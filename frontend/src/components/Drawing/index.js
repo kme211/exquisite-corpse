@@ -8,6 +8,7 @@ import SavedModal from './SavedModal'
 import { getAdjacentPositions, isPositionAdjacent } from 'utils'
 import { getUser } from 'controllers/user'
 import isEqual from 'lodash/isEqual'
+import { STATUS } from 'components/globals'
 
 const SAVE_BUTTON_TEXT = {
   SAVED: 'Saved!',
@@ -104,6 +105,7 @@ class Drawing extends Component {
             email: getUser().email,
             initials: getUser().initials
           },
+          status: STATUS.COMPLETE,
           pos: pos,
           scale: this.state.scale,
           image: this.state.image
@@ -122,16 +124,18 @@ class Drawing extends Component {
   render() {
     const { pos, nextPos, canvasData, saveButtonText, width, height, showSavedModal } = this.state
     const disabled = saveButtonText !== SAVE_BUTTON_TEXT.NORMAL
-    const borders = getAdjacentPositions(pos)
-      .filter(coords => !canvasData.find(data => isEqual(data.pos, coords)))
-      .map(p => this.mapPosition(pos, p))
+    const adjacentPositions = getAdjacentPositions(pos)
+    const availableSections = canvasData.filter(section => section.status === STATUS.AVAILABLE)
+    const completeSections = canvasData.filter(section => section.status === STATUS.COMPLETE)
+    const borders = availableSections
+      .filter(section => adjacentPositions.some(position => isEqual(position, section.pos)))
     return (
       <div>
           <h1>Drawing</h1>
 
           <Canvas
             position={pos}
-            adjacentData={canvasData.filter(data => data.adjacentPosition)}
+            adjacentData={completeSections.filter(data => data.adjacentPosition)}
             disabled={disabled}
             borders={borders}
             onStopDraw={this.handleStopDraw}/>

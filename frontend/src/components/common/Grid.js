@@ -34,7 +34,7 @@ const Grid = ({ enabledCells, completedCells, height, width, handleCellClick, se
     const cells = []
     for(let n = 0; n < width; n++) {
       const selected = selectedCellPos.length ? selectedCellPos[0] === n && selectedCellPos[1] === i : false
-      const enabled = enabledCells.some(cell => isEqual(cell, [n, i]))
+      const enabled = enabledCells.some(cell => isEqual(cell.pos, [n, i]))
       const completed = completedCells ? completedCells.find((cell) => cell.pos[0] === n && cell.pos[1] === i) : null
       console.log('selected', selected, 'enabled', enabled, 'completed', completed)
       const cell = (
