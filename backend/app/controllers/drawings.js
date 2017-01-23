@@ -39,8 +39,11 @@ exports.new = function (req, res) {
 
 exports.get = function (req, res) {
   const id = req.params.id
-  Drawing.findOne({ '_id': id }, (err, drawing) => {
+  Drawing.findById(id, (err, drawing) => {
     if(err) return res.send(err)
+    if(!drawing) return res.status(404).json({
+      errors: ['No drawing with that id']
+    })
     drawing.canvasData = drawing.canvasData.map(removeContributorEmail)
     res.json(drawing)
   })
