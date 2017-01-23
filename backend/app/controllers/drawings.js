@@ -4,14 +4,19 @@ const omit = require('lodash/omit')
 const queue = require('../../jobs/client')
 const isEqual = require('lodash/isEqual')
 
-const getAllPositions = ({ height, width }) => {
+function getAllPositions({ height, width }) {
   const positions = []
-  for(let i = 0; i < height; i++) {
-    for(let n = 0; n < width; n++) {
-      positions.push([i, n])
+  for(let y = 0; y < height; y++) {
+    for(let x = 0; x < width; x++) {
+      positions.push([x, y])
     }
   }
   return positions
+}
+
+function removeContributorEmail(data) {
+  if(!data.contributor) return data
+  return Object.assign({}, data, { contributor: data.contributor.initials })
 }
 
 exports.new = function (req, res) {
@@ -36,10 +41,7 @@ exports.get = function (req, res) {
   const id = req.params.id
   Drawing.findOne({ '_id': id }, (err, drawing) => {
     if(err) return res.send(err)
-    drawing.canvasData = drawing.canvasData.map(data => {
-      if(!data.contributor) return data
-      Object.assign({}, data, { contributor: data.contributor.initials })
-    })
+    drawing.canvasData = drawing.canvasData.map(removeContributorEmail)
     res.json(drawing)
   })
 }
@@ -50,20 +52,24 @@ exports.save = function (req, res) {
     if(err) return res.send(err)
     if(!drawing) res.status(404).send('No drawing with that ID')
     const pos = req.body.canvasData.pos
-    const index = drawing.canvasData.findIndex(data => isEqual(data.pos, pos))
+    const index = drawing.canvasData.findIndex(data => {
+      console.log('isEqual', data.pos, pos)
+      return isEqual(data.pos, pos)
+    })
+    console.log('pos', pos, 'index', index)
     drawing.canvasData = [
       ...drawing.canvasData.slice(0, index),
       req.body.canvasData,
       ...drawing.canvasData.slice(index + 1)
     ]
+    console.log(drawing.canvasData.map(data => data.pos))
     drawing.save((err, drawing) => {
       if(err) return res.send(err)
-      res.json(drawing.canvasData.map(data => {
-        if(!data.contributor) return data
-        Object.assign({}, data, { contributor: data.contributor.initials })
-      }))
+      // return the new canvasData without the contributors' email
+      res.json(drawing.canvasData.map(removeContributorEmail))
       console.log('drawing saved! number of sections: ', drawing.canvasData.length)
-      if(drawing.canvasData.length === (drawing.width * drawing.height)) {
+      // if all the sections are complete, enqueue the `processDrawing` job for it
+      if(drawing.canvasData.every(data => data.status === 'complete')) {
         queue.enqueue('processDrawing', { id: id }, (err, job) => {
           if(err) return console.log('enqueue error: ' + err)
           console.log('enqueued', job.data)

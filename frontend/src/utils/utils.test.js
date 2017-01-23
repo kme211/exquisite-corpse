@@ -9,11 +9,31 @@ describe('getAdjacentPositions', () => {
 })
 
 describe('getAllPositions', () => {
-  test('returns an array of all the positons of the sections in a grid', () => {
+  test('returns an array of all the positons of the sections in a 2x2 grid', () => {
     const height = 2
     const width = 2
     const actual = getAllPositions({ width, height })
     const expected = [[0, 0], [0, 1], [1, 0], [1, 1]]
+    
+    for(let i = 0; i < expected.length; i++) {
+      expect(actual).toContainEqual(expected[i])
+    }
+    expect(actual.length).toBe(4)
+  })
+  
+  test('returns an array of all the positons of the sections in a 1x2 grid', () => {
+    const height = 2
+    const width = 1
+    const actual = getAllPositions({ width, height })
+    const expected = [[0, 0], [0, 1]]
+    expect(actual).toEqual(expected)
+  })
+  
+  test('returns an array of all the positons of the sections in a 2x1 grid', () => {
+    const height = 1
+    const width = 2
+    const actual = getAllPositions({ width, height })
+    const expected = [[0, 0], [1, 0]]
     expect(actual).toEqual(expected)
   })
 })

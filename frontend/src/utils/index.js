@@ -15,9 +15,9 @@ export const getAdjacentPositions = (pos) => {
 
 export const getAllPositions = ({ height, width }) => {
   const positions = []
-  for(let i = 0; i < height; i++) {
-    for(let n = 0; n < width; n++) {
-      positions.push([i, n])
+  for(let y = 0; y < height; y++) {
+    for(let x = 0; x < width; x++) {
+      positions.push([x, y])
     }
   }
   return positions
