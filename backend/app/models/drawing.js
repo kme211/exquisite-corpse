@@ -6,7 +6,7 @@ const drawingSchema = new Schema({
   height: Schema.Types.Number,
   status: {type: String, default: 'in progress'},
   url: {type: String, default: ''},
-  canvasData: [Schema.Types.Mixed],
+  sections:  [Schema.Types.Mixed],
   date: { type: Date, default: Date.now }
 })
 

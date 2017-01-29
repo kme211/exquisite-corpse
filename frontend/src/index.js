@@ -6,22 +6,14 @@ import Welcome from 'components/Welcome'
 import Home from 'components/Home'
 import NewDrawing from 'components/NewDrawing'
 import Drawing from 'components/Drawing'
-import { getUser } from 'controllers/user'
-
-function userDataFound(nextState, replace) {
-  console.log('userDataFound')
-  let userData = getUser()
-  console.log(userData)
-  if(!userData) replace('/welcome')
-}
 
 render((
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRoute component={Home} onEnter={userDataFound} />
-      <Route path="/new" component={NewDrawing} onEnter={userDataFound} />
+      <IndexRoute component={Home} />
+      <Route path="/new" component={NewDrawing} />
       <Route path="/welcome" component={Welcome} />
-      <Route path="/drawings/:id/:xPos/:yPos" component={Drawing} onEnter={userDataFound} />
+      <Route path="/drawings/:id/:section" component={Drawing} />
     </Route>
   </Router>
 ), document.getElementById('container'))

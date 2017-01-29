@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Drawing = mongoose.model('Drawing')
+const Section = mongoose.model('Section')
 const omit = require('lodash/omit')
 const queue = require('../../jobs/client')
 const isEqual = require('lodash/isEqual')
@@ -14,27 +15,53 @@ function getAllPositions({ height, width }) {
   return positions
 }
 
+const getAdjacentPositions = (pos) => {
+  const [ x, y ] = pos
+  let adjacentPositions = [
+    [x - 1, y],
+    [x + 1, y],
+    [x, y - 1],
+    [x, y + 1]
+  ]
+  return adjacentPositions
+    .filter(position => position.every(num => num >= 0))
+}
+
 function removeContributorEmail(data) {
   if(!data.contributor) return data
   return Object.assign({}, data, { contributor: data.contributor.initials })
 }
 
-exports.new = function (req, res) {
-  const width = req.params.width
-  const height = req.params.height
+exports.new = function (req, res, next) {
+  const width = req.query.width
+  const height = req.query.height
   let drawing = new Drawing
   drawing.width = width
   drawing.height = height
-  drawing.canvasData = getAllPositions({ width, height }).map(pos => {
-    return { pos: pos, status: 'available' }
+
+  let sections = getAllPositions({ width, height }).map(pos => {
+    let section = new Section
+    section.x = pos[0]
+    section.y = pos[1]
+    section.status = 'available'
+    section.drawing = drawing._id
+    return section.save()
   })
-  drawing.save((err, d) => {
-    if(err) return res.send(err)
-    console.log('drawing saved', d)
-    res.json({
-      drawingId: d.id
+
+  Promise
+    .all(sections)
+    .then((sections) => {
+      drawing.sections = sections.map(section => {
+        return {
+          id: section._id,
+          x: section.x,
+          y: section.y,
+        }
+      })
+      return drawing.save()
     })
-  })
+    .then(drawing => res.json(drawing))
+    .catch(next)
 }
 
 exports.get = function (req, res) {
@@ -44,10 +71,12 @@ exports.get = function (req, res) {
     if(!drawing) return res.status(404).json({
       errors: ['No drawing with that id']
     })
-    drawing.canvasData = drawing.canvasData.map(removeContributorEmail)
+    
     res.json(drawing)
   })
 }
+
+
 
 exports.save = function (req, res) {
   const id = req.body.id

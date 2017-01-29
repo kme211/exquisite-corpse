@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled, {css} from 'styled-components'
-import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
+//import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
+import { getSection } from 'controllers/section'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
@@ -39,12 +40,12 @@ class Drawing extends Component {
   }
 
   componentDidMount() {
-    const { id, xPos, yPos } = this.props.params
-    addDrawingToLibrary(id)
-    getDrawing(id).then((res) => {
+    const { id, section } = this.props.params
+    //addDrawingToLibrary(id)
+    getDrawing(section).then((res) => {
       const drawing = res.data
-      const pos = [parseInt(xPos), parseInt(yPos)]
-      const canvasData = this.getAdjacentData(pos, drawing.canvasData)
+      //const pos = [parseInt(xPos), parseInt(yPos)]
+      //const canvasData = this.getAdjacentData(pos, drawing.canvasData)
       this.setState({
         id: id,
         width: drawing.width,
@@ -54,7 +55,7 @@ class Drawing extends Component {
       })
     })
   }
-  
+
   mapPosition(currentPos, pos) {
     let adjacentPosition
     if(pos[0] < currentPos[0]) adjacentPosition = 'left'

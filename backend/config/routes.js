@@ -1,10 +1,12 @@
 const join = require('path').join;
 const drawings = require('../app/controllers/drawings')
+const sections = require('../app/controllers/sections')
 
 module.exports = function (app) {
   // drawing routes
-  app.get('/api/drawings/:width/:height', drawings.new)
+  app.get('/api/drawings', drawings.new)
   // api routes
   app.get('/api/drawings/:id', drawings.get)
   app.post('/api/drawings', drawings.save)
+  app.get('/api/sections', sections.getSurroundingSections)
 }
