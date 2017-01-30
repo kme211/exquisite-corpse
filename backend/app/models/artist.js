@@ -6,8 +6,8 @@ const artistSchema = new Schema({
   drawings: [{ type: Schema.Types.ObjectId, ref: 'Drawing' }]
 })
 
-artistSchema.static('findByEmail', function (email, callback) {
-  return this.find({ email: email }, callback);
+artistSchema.static('findByEmail', function (email) {
+  return this.findOne({ email: email })
 })
 
 module.exports = mongoose.model('Artist', artistSchema, 'artists')

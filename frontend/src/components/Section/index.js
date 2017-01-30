@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled, {css} from 'styled-components'
-//import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
-import { getSection, saveSection } from 'controllers/section'
+import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
+import { getSection } from 'controllers/section'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
@@ -17,14 +17,13 @@ const SAVE_BUTTON_TEXT = {
   NORMAL: 'Save'
 }
 
-class Drawing extends Component {
+class Section extends Component {
 
   constructor(props, context) {
     super(props, context)
 
     this.state = {
-      drawing: '',
-      section: '',
+      id: '',
       showSavedModal: false,
       saveButtonText: SAVE_BUTTON_TEXT.NORMAL,
       image: null,
@@ -32,7 +31,7 @@ class Drawing extends Component {
       pos: [],
       width: 0,
       height: 0,
-      sections: [],
+      canvasData: [],
       nextPos: []
     }
     this.handleStopDraw = this.handleStopDraw.bind(this)
@@ -41,17 +40,18 @@ class Drawing extends Component {
   }
 
   componentDidMount() {
-    const { drawing, section } = this.props.params
+    const { id, xPos, yPos } = this.props.params
     //addDrawingToLibrary(id)
-    getSection(section).then((res) => {
-      const data = res.data
+    getSection(id).then((res) => {
+      const drawing = res.data
+      const pos = [parseInt(xPos), parseInt(yPos)]
+      const canvasData = this.getAdjacentData(pos, drawing.canvasData)
       this.setState({
-        drawing: drawing,
-        section: section,
-        width: data.width,
-        height: data.height,
-        pos: data.pos,
-        sections: data.sections
+        id: id,
+        width: drawing.width,
+        height: drawing.height,
+        pos: pos,
+        canvasData: canvasData
       })
     })
   }
@@ -98,43 +98,41 @@ class Drawing extends Component {
       saveButtonText: SAVE_BUTTON_TEXT.SAVING
     }, () => {
       console.log('saveButtonText updated')
-      const { section, pos, drawing, image } = this.state
-      saveSection({
-        id: section,
-        image: image,
-        status: STATUS.COMPLETE,
-        drawing: drawing,
-        artist: 'kungfu.keari@gmail.com'
+      const { id, pos } = this.state
+      saveDrawing({
+        id: id,
+        canvasData: {
+          contributor: {
+            email: getUser().email,
+            initials: getUser().initials
+          },
+          status: STATUS.COMPLETE,
+          pos: pos,
+          scale: this.state.scale,
+          image: this.state.image
+        }
       }).then((res) => {
-        let index = this.state.sections.findIndex(section => section.x === pos[0] && section.y === pos[1])
-        console.log('response recieved', index)
         this.setState({
           saveButtonText: SAVE_BUTTON_TEXT.SAVED,
-          sections: [
-            ...this.state.sections.slice(0, index),
-            res.data,
-            ...this.state.sections.slice(index+1)
-          ],
+          canvasData: res.data,
           showSavedModal: true
         })
       })
-
-
     })
 
   }
 
   render() {
-    const { pos, nextPos, sections, saveButtonText, width, height, showSavedModal } = this.state
+    const { pos, nextPos, canvasData, saveButtonText, width, height, showSavedModal } = this.state
     const disabled = saveButtonText !== SAVE_BUTTON_TEXT.NORMAL
     const adjacentPositions = getAdjacentPositions(pos)
-    const availableSections = sections.filter(section => section.status === STATUS.AVAILABLE)
-    const completeSections = sections.filter(section => section.status === STATUS.COMPLETE)
+    const availableSections = canvasData.filter(section => section.status === STATUS.AVAILABLE)
+    const completeSections = canvasData.filter(section => section.status === STATUS.COMPLETE)
     const borders = availableSections
       .filter(section => adjacentPositions.some(position => isEqual(position, section.pos)))
     return (
       <div>
-          <h1>Drawing</h1>
+          <h1>Section</h1>
 
           <Canvas
             position={pos}
@@ -149,7 +147,7 @@ class Drawing extends Component {
               height={height}
               pos={pos}
               nextPos={nextPos}
-              sections={sections}
+              canvasData={canvasData}
               handleCellClick={this.handleCellClick}/>
 
             <Button
@@ -164,4 +162,4 @@ class Drawing extends Component {
   }
 }
 
-export default Drawing
+export default Section

@@ -50,18 +50,18 @@ class SavedModal extends Component {
   }
 
   render() {
-    const { width, height, pos, nextPos, handleCellClick, canvasData } = this.props
+    const { width, height, pos, nextPos, handleCellClick, sections } = this.props
     const adjacentPositions = getAdjacentPositions(pos)
     //const enabledCells = getAdjacentPositions(pos).filter(pos => !canvasData.some(data => isEqual(pos, data.pos)))
     const sectionIsAvailable = (section) => section.status === STATUS.AVAILABLE
     const sectionIsAdjacent = (section) => adjacentPositions.some(position => isEqual(position, section.pos))
-    const enabledCells = canvasData.filter(sectionIsAvailable).filter(sectionIsAdjacent)
+    const enabledCells = sections.filter(sectionIsAvailable).filter(sectionIsAdjacent)
     const sectionIsComplete = (section) => section.status === STATUS.COMPLETE
-  
-    const completedCells = canvasData.filter(sectionIsComplete).map(section => {
+
+    const completedCells = sections.filter(sectionIsComplete).map(section => {
       return {
         pos: section.pos,
-        content: section.contributor
+        content: section.artist
       }
     })
     console.log('nextPos', nextPos, 'enabledCells', enabledCells, 'completedCells', completedCells)
@@ -92,7 +92,7 @@ SavedModal.propTypes = {
   pos: PropTypes.array.isRequired,
   nextPos: PropTypes.array.isRequired,
   handleCellClick: PropTypes.func.isRequired,
-  canvasData: PropTypes.array.isRequired
+  sections: PropTypes.array.isRequired
 }
 
 export default SavedModal

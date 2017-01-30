@@ -3,7 +3,7 @@ const Drawing = mongoose.model('Drawing')
 const Section = mongoose.model('Section')
 const omit = require('lodash/omit')
 const queue = require('../../jobs/client')
-const isEqual = require('lodash/isEqual')
+
 
 function getAllPositions({ height, width }) {
   const positions = []
@@ -15,17 +15,7 @@ function getAllPositions({ height, width }) {
   return positions
 }
 
-const getAdjacentPositions = (pos) => {
-  const [ x, y ] = pos
-  let adjacentPositions = [
-    [x - 1, y],
-    [x + 1, y],
-    [x, y - 1],
-    [x, y + 1]
-  ]
-  return adjacentPositions
-    .filter(position => position.every(num => num >= 0))
-}
+
 
 function removeContributorEmail(data) {
   if(!data.contributor) return data
@@ -71,7 +61,7 @@ exports.get = function (req, res) {
     if(!drawing) return res.status(404).json({
       errors: ['No drawing with that id']
     })
-    
+
     res.json(drawing)
   })
 }

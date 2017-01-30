@@ -13,7 +13,7 @@ render((
       <IndexRoute component={Home} />
       <Route path="/new" component={NewDrawing} />
       <Route path="/welcome" component={Welcome} />
-      <Route path="/drawings/:id/:section" component={Drawing} />
+      <Route path="/drawings/:drawing/:section" component={Drawing} />
     </Route>
   </Router>
 ), document.getElementById('container'))

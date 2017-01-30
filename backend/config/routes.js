@@ -8,5 +8,6 @@ module.exports = function (app) {
   // api routes
   app.get('/api/drawings/:id', drawings.get)
   app.post('/api/drawings', drawings.save)
-  app.get('/api/sections', sections.getSurroundingSections)
+  app.get('/api/sections/:id', sections.getSurroundingSections)
+  app.post('/api/sections/:id', sections.save)
 }
