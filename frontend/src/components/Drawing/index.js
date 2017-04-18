@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled, {css} from 'styled-components'
-import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
+import { saveDrawing, getDrawing } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
@@ -38,7 +38,6 @@ class Drawing extends Component {
 
   componentDidMount() {
     const { id, xPos, yPos } = this.props.params
-    addDrawingToLibrary(id)
     getDrawing(id).then((res) => {
       const drawing = res.data
       const pos = [parseInt(xPos), parseInt(yPos)]
@@ -89,13 +88,15 @@ class Drawing extends Component {
       saveButtonText: SAVE_BUTTON_TEXT.SAVING
     }, () => {
       console.log('saveButtonText updated')
+      const profile = this.props.auth.getProfile()
+      console.log('profile', profile)
       const { id, pos } = this.state
       saveDrawing({
         id: id,
         canvasData: {
           contributor: {
-            email: getUser().email,
-            initials: getUser().initials
+            user_id: profile.user_id,
+            picture: profile.picture
           },
           pos: pos,
           scale: this.state.scale,
