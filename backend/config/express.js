@@ -2,8 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const jwt = require('express-jwt')
-const jwksRsa = require('jwks-rsa')
-const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const config = require('./')
 
