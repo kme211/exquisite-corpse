@@ -1,6 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const jwt = require('express-jwt')
+const jwksRsa = require('jwks-rsa')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
 const config = require('./')
 
 const env = process.env.NODE_ENV || 'development'
@@ -11,13 +15,21 @@ module.exports = function(app) {
   app.set('view engine', 'ejs')
   app.set('views', config.root + '/views');
   // Middleware
+  app.use(logger('dev'))
   app.use(bodyParser.json({limit: "50mb"}));
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+  app.use(cookieParser())
 
-  const myLogger = function (req, res, next) {
-    if(app.get('env') === 'test') return next()
-    console.log(`${req.method} ${req.originalUrl}`)
-    next()
-  }
-  app.use(myLogger)
+  const authenticate = jwt({
+    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
+    audience: process.env.AUTH0_CLIENT_ID
+  })
+
+  app.use('/', authenticate)
+
+  app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+      res.status(401).send('invalid token');
+    }
+  })
 }
