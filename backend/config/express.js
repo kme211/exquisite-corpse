@@ -16,7 +16,6 @@ module.exports = function(app) {
   app.use(logger('dev'))
   app.use(bodyParser.json({limit: "50mb"}));
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-  app.use(cookieParser())
 
   const authenticate = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
