@@ -21,7 +21,7 @@ exports.get = function (req, res) {
   const id = req.params.id
   Drawing.findOne({ '_id': id }, (err, drawing) => {
     if(err) return res.send(err)
-    drawing.canvasData = drawing.canvasData.map(data => Object.assign({}, data, { contributor: data.contributor.initials }))
+    drawing.canvasData = drawing.canvasData.map(data => Object.assign({}, data, { contributor: data.contributor.picture }))
     res.json(drawing)
   })
 }
@@ -34,7 +34,7 @@ exports.save = function (req, res) {
     drawing.canvasData.push(req.body.canvasData)
     drawing.save((err, drawing) => {
       if(err) return res.send(err)
-      res.json(drawing.canvasData.map(data => Object.assign({}, data, { contributor: data.contributor.initials })))
+      res.json(drawing.canvasData.map(data => Object.assign({}, data, { contributor: data.contributor.picture })))
       console.log('drawing saved! number of sections: ', drawing.canvasData.length)
       if(drawing.canvasData.length === (drawing.width * drawing.height)) {
         queue.enqueue('processDrawing', { id: id }, (err, job) => {

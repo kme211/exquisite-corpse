@@ -24,9 +24,18 @@ const cellStyle = ({ enabled, selected, completed }) => css`
   margin: 2px;
   cursor: pointer;
   pointer-events: ${enabled ? 'auto' : 'none'};
+  transition: background 0.4s;
+
+  &:hover {
+    background: #418C9F;
+  }
 `
 
 const Cell = styled.div`${cellStyle}`
+
+const UserImage = styled.img`
+  width: 100%;
+`
 
 const Grid = ({ enabledCells, completedCells, height, width, handleCellClick, selectedCellPos }) => {
   const rows = []
@@ -46,7 +55,7 @@ const Grid = ({ enabledCells, completedCells, height, width, handleCellClick, se
           data-x={n}
           data-y={i}
           onClick={handleCellClick}
-        >{completed ? completed.content : ''}</Cell>
+        >{completed ? <UserImage src={completed.image}/> : ''}</Cell>
       )
 
       cells.push(cell)
