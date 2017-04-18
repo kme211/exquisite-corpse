@@ -61,6 +61,7 @@ const Header = (props) => {
       </div>
       <div>
         <StyledLink to="/new">New drawing</StyledLink>
+        <StyledLink to="/login">Login</StyledLink>
       </div>
     </Wrapper>
   )

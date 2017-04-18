@@ -44,7 +44,8 @@ class Home extends Component {
     //  )
     return (
       <div>
-        <h1>Hi, {profile.name}!</h1>
+        <h1>Home</h1>
+        <h2>Hi, {profile.name}!</h2>
 
       </div>
     )
