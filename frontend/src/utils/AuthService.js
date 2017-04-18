@@ -22,14 +22,14 @@ class AuthService extends EventEmitter {
   }
 
   // The _doAuthentication function will get the user profile information if authentication is successful
-  _doAuthentication(err, token){
+  _doAuthentication(err, profile, id_token, access_token, state, refresh_token){
     if(this.hash){
       localStorage.setItem('id_token', this.hash.idToken);
       // The setProfile function sets the user profile information in localStorage
       this.lock.getProfile(this.hash.idToken, this.setProfile.bind(this));
     } else {
-      localStorage.setItem('id_token', token.idToken);
-      this.lock.getProfile(token.idToken, this.setProfile.bind(this));
+      localStorage.setItem('id_token', id_token);
+      this.lock.getProfile(id_token, this.setProfile.bind(this));
     }
   }
 
