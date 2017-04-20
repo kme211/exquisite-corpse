@@ -1,4 +1,4 @@
-import { getAdjacentPositions, getAllPositions, isPositionAdjacent } from './index'
+import { getAdjacentPositions, getAllPositions, isPositionAdjacent, mapPosition } from './index'
 
 describe('getAdjacentPositions', () => {
   test('returns an array of neighboring sections', () => {
@@ -35,5 +35,31 @@ describe('positionIsAdjacent', () => {
     const actual = isPositionAdjacent([1, 1], [1, 2])
     const expected = true
     expect(actual).toBe(expected)
+  })
+  
+  describe('mapPosition', () => {
+    test('returns "bottom" if the second arg position is below the first arg position', () => {
+      const actual = mapPosition([0,0], [0,1])
+      const expected = 'bottom'
+      expect(actual).toBe(expected)
+    })
+    
+    test('returns "left" if the second arg position is to the left the first arg position', () => {
+      const actual = mapPosition([1,0], [0,0])
+      const expected = 'left'
+      expect(actual).toBe(expected)
+    })
+    
+    test('returns "right" if the second arg position is to the right the first arg position', () => {
+      const actual = mapPosition([1,0], [2,0])
+      const expected = 'right'
+      expect(actual).toBe(expected)
+    })
+    
+    test('returns "top" if the second arg position is above the first arg position', () => {
+      const actual = mapPosition([1,1], [1,0])
+      const expected = 'top'
+      expect(actual).toBe(expected)
+    })
   })
 })

@@ -40,6 +40,10 @@ describe('Drawings', () => {
     const data = {
       id: id,
       canvasData: {
+        contributor: {
+          intials: 'ke',
+          email: 'ke@example.com'
+        },
         pos: [0, 0],
         imageData: 'some mocked data'
       }
@@ -49,7 +53,8 @@ describe('Drawings', () => {
       .post(`${URL}`)
       .send(data)
       .then((res) => {
-        expect(res.body.id).toBe(id)
+        expect(res.body).toBeAn('array')
+        expect(res.body.length).toBe(1)
       })
   })
 

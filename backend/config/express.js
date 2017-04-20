@@ -2,10 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const jwt = require('express-jwt')
-const logger = require('morgan')
+const morgan = require('morgan')
 const config = require('./')
 
-const env = process.env.NODE_ENV || 'development'
+
 
 module.exports = function(app) {
   app.use(cors())
@@ -13,9 +13,12 @@ module.exports = function(app) {
   app.set('view engine', 'ejs')
   app.set('views', config.root + '/views');
   // Middleware
-  app.use(logger('dev'))
   app.use(bodyParser.json({limit: "50mb"}));
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+  
+  const logger = app.get('env') === 'production' ? morgan('combined', {
+    skip: function (req, res) { return res.statusCode < 400 }
+  }) : morgan('dev')
 
   const authenticate = jwt({
     secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
@@ -29,4 +32,6 @@ module.exports = function(app) {
       res.status(401).send('invalid token');
     }
   })
+
+  app.use(logger)
 }
