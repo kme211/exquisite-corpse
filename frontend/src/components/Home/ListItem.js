@@ -18,10 +18,8 @@ const Status = styled.p`
 
 const ShareLink = styled.a`
   background: white;
-  border-radius: 10px;
-  border: 1px solid ${colors.primary[2]};
   color: ${colors.primary[2]};
-  padding: 0.5rem;
+  padding: 0.25rem;
   text-decoration: none;
   position: absolute;
   bottom: 0.5rem;
@@ -33,7 +31,7 @@ const ListItem = ({_id, status, url}) => {
     <StyledListItem>
       {status === 'complete' && <a href={url} target="_blank"><img src={url} height="250" alt="your masterpiece"/></a>}
       <Status>{status}</Status>
-      <ShareLink href="http://twitter.com"><Icon icon="social-twitter"/> Share</ShareLink>
+      {status === 'complete' && <ShareLink href="http://twitter.com"><Icon icon="social-twitter"/> Share</ShareLink>}
     </StyledListItem>
   )
 }

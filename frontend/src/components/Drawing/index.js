@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled, {css} from 'styled-components'
-import { saveDrawing, getDrawing, addDrawingToLibrary } from 'controllers/drawing'
+import { saveDrawing, getDrawing } from 'controllers/drawing'
 import Canvas from 'components/Canvas'
 import Button from 'components/common/Button'
 import Grid from 'components/common/Grid'
@@ -38,34 +38,32 @@ class Drawing extends Component {
 
   componentDidMount() {
     const { id, xPos, yPos } = this.props.params
-    addDrawingToLibrary(id)
     getDrawing(id).then((res) => {
       const drawing = res.data
       const pos = [parseInt(xPos), parseInt(yPos)]
-      const canvasData = this.getAdjacentData(pos, drawing.canvasData)
+      const adjacentData = this.getAdjacentData(pos, drawing.canvasData, drawing.width, drawing.height)
       this.setState({
         id: id,
         width: drawing.width,
         height: drawing.height,
         pos: pos,
-        canvasData: canvasData
+        canvasData: drawing.canvasData,
+        adjacentData: adjacentData
       })
     })
   }
 
   getAdjacentData(currentPos, canvasData) {
-    return canvasData
-      .map(data => {
+    let adjacentData = getAdjacentPositions(currentPos)
+    return adjacentData
+      .map(pos => {
+        let data = canvasData.find((d) => d.pos.join(',') === pos.join(',')) || { pos, image: null }
         let adjacentPosition
-        if(isPositionAdjacent(currentPos, data.pos)) {
-          if(data.pos[0] < currentPos[0]) adjacentPosition = 'left'
-          if(data.pos[0] > currentPos[0]) adjacentPosition = 'right'
-          if(data.pos[1] < currentPos[1]) adjacentPosition = 'top'
-          if(data.pos[1] > currentPos[1]) adjacentPosition = 'bottom'
-        } else {
-          adjacentPosition = null
-        }
-        return Object.assign({}, data, { adjacentPosition: adjacentPosition })
+        if(data.pos[0] < currentPos[0]) adjacentPosition = 'left'
+        if(data.pos[0] > currentPos[0]) adjacentPosition = 'right'
+        if(data.pos[1] < currentPos[1]) adjacentPosition = 'top'
+        if(data.pos[1] > currentPos[1]) adjacentPosition = 'bottom'
+        return Object.assign({}, data, { adjacentPosition })
       })
   }
 
@@ -89,13 +87,15 @@ class Drawing extends Component {
       saveButtonText: SAVE_BUTTON_TEXT.SAVING
     }, () => {
       console.log('saveButtonText updated')
+      const profile = this.props.auth.getProfile()
+      console.log('profile', profile)
       const { id, pos } = this.state
       saveDrawing({
         id: id,
         canvasData: {
           contributor: {
-            email: getUser().email,
-            initials: getUser().initials
+            auth0_id: profile.user_id,
+            picture: profile.picture
           },
           pos: pos,
           scale: this.state.scale,
@@ -113,7 +113,7 @@ class Drawing extends Component {
   }
 
   render() {
-    const { pos, nextPos, canvasData, saveButtonText, width, height, showSavedModal } = this.state
+    const { pos, nextPos, canvasData, adjacentData, saveButtonText, width, height, showSavedModal } = this.state
     const disabled = saveButtonText !== SAVE_BUTTON_TEXT.NORMAL
     return (
       <div>
@@ -121,7 +121,7 @@ class Drawing extends Component {
 
           <Canvas
             position={pos}
-            adjacentData={canvasData.filter(data => data.adjacentPosition)}
+            adjacentData={adjacentData}
             disabled={disabled}
             onStopDraw={this.handleStopDraw}/>
 

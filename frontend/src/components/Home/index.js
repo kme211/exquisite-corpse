@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import styled, {css} from 'styled-components'
-import { getAllDrawings, getDrawing } from 'controllers/drawing'
-import { getUser } from 'controllers/user'
+import AuthService from 'utils/AuthService'
 import ListItem from './ListItem'
+import { getUser, newUser } from 'controllers/user'
 
 const List = styled.ul`
   display: flex;
@@ -13,36 +13,59 @@ const List = styled.ul`
 class Home extends Component {
   constructor(props) {
     super(props)
-    
+
     this.state = {
-      drawings: []
+      drawings: [],
+      profile: props.auth.getProfile()
     }
-  }
-  
-  componentDidMount() {
-    this.fetchDrawings()
-  }
-  
-  fetchDrawings() {
-    getAllDrawings().forEach(id => {
-      getDrawing(id).then(res => {
-        this.setState({
-          drawings: this.state.drawings.concat(res.data)
-        })
-      })
+    props.auth.on('profile_updated', (newProfile) => {
+      this.setState({profile: newProfile})
     })
+
+    this.handleUserResponse = this.handleUserResponse.bind(this)
   }
-  
+
+  componentDidMount() {
+    const { profile } = this.state
+
+    getUser(profile.user_id)
+        .then(this.handleUserResponse)
+        .catch((err) => {
+          console.log('err trying to get user', err)
+          newUser(profile.user_id, profile.email)
+            .then(this.handleUserResponse)
+            .catch((err) => console.log('err creating new user', err))
+        })
+  }
+
+  handleUserResponse(response) {
+    this.setState({ drawings: response.data.drawings })
+  }
+
   render() {
+     const { profile, drawings } = this.state
+
+     const ListOfDrawings = (
+       <List>
+         {drawings.map(drawing => <ListItem key={drawing._id} {...drawing} />)}
+       </List>
+     )
     return (
       <div>
-        <h1>Hi, {getUser().firstName}!</h1>
-        <List>
-          {this.state.drawings.map(drawing => <ListItem key={drawing.id} {...drawing} />)}
-        </List>
+        <h1>Home</h1>
+        <h2>Hi, {profile.name}!</h2>
+        {ListOfDrawings}
       </div>
     )
   }
+}
+
+Home.propTypes = {
+  auth: PropTypes.instanceOf(AuthService)
+}
+
+Home.contextTypes = {
+  router: PropTypes.object
 }
 
 export default Home

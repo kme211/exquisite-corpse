@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import styled, { css } from 'styled-components'
 
 const styles = ({ disabled, width }) => css`
+  user-select: none;
   position: relative;
   width: ${width};
   background: white;
@@ -12,12 +13,14 @@ const styles = ({ disabled, width }) => css`
 
 const Wrapper = styled.div`${styles}`
 
-const secretImgStyles = ({ pos }) => css`
+const secretImgStyles = ({ pos, hasImage }) => css`
+  user-select: none;
   position: absolute;
   overflow: hidden;
   pointer-events: none;
+  background: ${hasImage ? 'transparent' : 'rgba(0, 0, 0, 0.15)'};
   left: ${pos === 'left' ? 0 : 'auto'};
-  right: ${pos === 'right' ? '25px' : 'auto'};
+  right: ${pos === 'right' ? 0 : 'auto'};
   top: ${pos === 'top' || pos === 'left' || pos === 'right' ? 0 : 'auto'};
   bottom: ${pos === 'bottom' ? 0 : 'auto'};
   height: ${pos === 'top' || pos === 'bottom' ? '25px' : '100%'};
@@ -77,14 +80,14 @@ class Canvas extends React.Component {
 
   stopDraw(e) {
     console.warn('stopDraw')
+    if(!this.state.isDrawing) return
     this.setState({
       isDrawing: false
+    }, () => {
+      const image = this.canvas.toDataURL()
+      const scale = this.state.scale
+      this.props.onStopDraw({ image, scale })
     })
-
-    if(e.type === 'mouseout') return
-    const image = this.canvas.toDataURL()
-    const scale = this.state.scale
-    this.props.onStopDraw({ image, scale })
   }
 
   draw(e) {
@@ -122,6 +125,7 @@ class Canvas extends React.Component {
   }
 
   render() {
+    console.log('adjacentData', this.props.adjacentData)
     return (
     <Wrapper width={this.state.canvasWidth}>
 
@@ -141,8 +145,9 @@ class Canvas extends React.Component {
             return (
               <SecretImg
                 key={`image-${data.pos}`}
+                hasImage={data.image ? true : false}
                 pos={data.adjacentPosition}>
-                <img alt="secret" src={data.image}/>
+                {data.image && <img alt="" src={data.image}/>}
               </SecretImg>
             )
           })}

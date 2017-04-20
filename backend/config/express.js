@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const jwt = require('express-jwt')
 const morgan = require('morgan')
 const config = require('./')
 
@@ -19,10 +20,18 @@ module.exports = function(app) {
     skip: function (req, res) { return res.statusCode < 400 }
   }) : morgan('dev')
 
-  // const myLogger = function (req, res, next) {
-  //   if(app.get('env') === 'test') return next()
-  //   console.log(`${req.method} ${req.originalUrl}`)
-  //   next()
-  // }
+  const authenticate = jwt({
+    secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
+    audience: process.env.AUTH0_CLIENT_ID
+  })
+
+  app.use('/', authenticate)
+
+  app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+      res.status(401).send('invalid token');
+    }
+  })
+
   app.use(logger)
 }

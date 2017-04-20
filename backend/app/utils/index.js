@@ -7,6 +7,23 @@ function isType(value, type) {
   return typeof value
 }
 
+function getDataWithPosition(canvasData, positionString) {
+  return canvasData.find((data) => {
+    return data.pos.join(',') === positionString
+  })
+}
+
+exports.canvasDataIsAllThere = function(height, width, canvasData) {
+  if(canvasData.length < (height * width)) return false
+  for(let i = 0; i < height; i++) {
+    for(let n = 0; n < width; n++) {
+      let found = getDataWithPosition(canvasData, `${i},${n}`)
+      if(!found) return false
+    }
+  }
+  return true
+}
+
 /**
  * Check to make sure object has all required properties and property types
  * @param {object} obj - The object to check

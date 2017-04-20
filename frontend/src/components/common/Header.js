@@ -52,7 +52,7 @@ const StyledIndexLink = styled(IndexLink)`
   text-decoration: none;
 `
 
-const Header = (props) => {
+const Header = ({ isLoggedIn }) => {
   return (
     <Wrapper>
       <div>
@@ -60,10 +60,16 @@ const Header = (props) => {
         <span><StyledIndexLink to="/">exquisite-corpse</StyledIndexLink></span>
       </div>
       <div>
-        <StyledLink to="/new">New drawing</StyledLink>
+        {isLoggedIn && <StyledLink to="/home">Home</StyledLink>}
+        {isLoggedIn && <StyledLink to="/new">New drawing</StyledLink>}
+        {isLoggedIn ? <StyledLink to="/logout">Logout</StyledLink> : <StyledLink to="/login">Login</StyledLink>}
       </div>
     </Wrapper>
   )
+}
+
+Header.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired
 }
 
 export default Header

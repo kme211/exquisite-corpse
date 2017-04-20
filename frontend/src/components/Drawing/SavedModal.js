@@ -54,7 +54,7 @@ class SavedModal extends Component {
     const completedCells = canvasData.map(data => {
       return {
         pos: data.pos,
-        content: data.contributor
+        image: data.contributor
       }
     })
     console.log('nextPos', nextPos, 'enabledCells', enabledCells, 'completedCells', completedCells)

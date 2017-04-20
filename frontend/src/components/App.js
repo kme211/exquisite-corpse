@@ -17,36 +17,21 @@ const Container = styled.div`
   padding: 1rem;
 `
 
-function storageAvailable(type) {
-	try {
-		const storage = window[type],
-			x = '__storage_test__'
-		storage.setItem(x, x)
-		storage.removeItem(x)
-		return true
-	}
-	catch(e) {
-		return false
-	}
-}
-
 class App extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-  }
-
-  componentDidMount() {
-    if (!storageAvailable('localStorage')) {
-      //this.context.router.push('/welcome') // show message about localStorage
-    }
-  }
-
   render() {
+    let children = null
+    const auth = this.props.route.auth
+    if (this.props.children) {
+      children = React.cloneElement(this.props.children, {
+        auth: auth //sends auth instance to children
+      })
+    }
+
     return (
       <Wrapper>
-        <Header/>
+        <Header isLoggedIn={auth.loggedIn()} />
         <Container>
-          {this.props.children}
+          {children}
         </Container>
       </Wrapper>
     )
