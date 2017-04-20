@@ -18,10 +18,8 @@ const Status = styled.p`
 
 const ShareLink = styled.a`
   background: white;
-  border-radius: 10px;
-  border: 1px solid ${colors.primary[2]};
   color: ${colors.primary[2]};
-  padding: 0.5rem;
+  padding: 0.25rem;
   text-decoration: none;
   position: absolute;
   bottom: 0.5rem;
