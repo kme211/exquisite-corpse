@@ -4,7 +4,8 @@ const path = require('path')
 
 const GLOBALS = {
   '__AUTH0_CLIENT_ID__': JSON.stringify(process.env.__AUTH0_CLIENT_ID__),
-  '__AUTH0_DOMAIN__': JSON.stringify(process.env.__AUTH0_DOMAIN__)
+  '__AUTH0_DOMAIN__': JSON.stringify(process.env.__AUTH0_DOMAIN__),
+  '__API_URL__': JSON.stringify(process.env.__API_URL__)
 }
 
 

@@ -16,7 +16,7 @@ import { saveRoute } from 'utils/routerHelper'
 
 const auth = new AuthService(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__)
 
-axios.defaults.baseURL = 'http://localhost:3000/api/'
+axios.defaults.baseURL = __API_URL__
 axios.defaults.headers.common['Authorization'] = auth.loggedIn() ? `Bearer ${auth.getToken()}` : null
 
 auth.on('profile_updated', () => {
