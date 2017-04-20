@@ -8,17 +8,26 @@ import Home from 'components/Home'
 import NewDrawing from 'components/NewDrawing'
 import Drawing from 'components/Drawing'
 import Login from 'components/Login'
+import Logout from 'components/Logout'
 import Splash from 'components/Splash'
 import { getUser } from 'controllers/user'
+import axios from 'axios'
+import { saveRoute } from 'utils/routerHelper'
 
 const auth = new AuthService(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__)
 
+axios.defaults.baseURL = 'http://localhost:3000/api/'
+axios.defaults.headers.common['Authorization'] = auth.loggedIn() ? `Bearer ${auth.getToken()}` : null
+
+auth.on('profile_updated', () => {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${auth.getToken()}`
+})
+
 const requireAuth = (nextState, replace) => {
   if (!auth.loggedIn()) {
-    console.log('user is not logged in')
+    const currentRoute = nextState.location.pathname
+    saveRoute(currentRoute)
     replace({ pathname: '/login' })
-  } else {
-    console.log('user IS logged in')
   }
 }
 
@@ -30,6 +39,7 @@ render((
       <Route path="/new" component={NewDrawing} onEnter={requireAuth} />
       <Route path="/welcome" component={Welcome} />
       <Route path="/login" component={Login} />
+      <Route path="/logout" component={Logout} onEnter={requireAuth} />
       <Route path="/drawings/:id/:xPos/:yPos" component={Drawing} onEnter={requireAuth} />
     </Route>
   </Router>

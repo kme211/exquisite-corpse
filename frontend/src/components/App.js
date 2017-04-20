@@ -20,16 +20,16 @@ const Container = styled.div`
 class App extends React.Component {
   render() {
     let children = null
+    const auth = this.props.route.auth
     if (this.props.children) {
-      console.info('children', this.props.route.auth)
       children = React.cloneElement(this.props.children, {
-        auth: this.props.route.auth //sends auth instance to children
+        auth: auth //sends auth instance to children
       })
     }
 
     return (
       <Wrapper>
-        <Header/>
+        <Header isLoggedIn={auth.loggedIn()} />
         <Container>
           {children}
         </Container>

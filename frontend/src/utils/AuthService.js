@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import { isTokenExpired } from './jwtHelper'
 import Auth0LockPasswordless from 'auth0-lock-passwordless'
+
 class AuthService extends EventEmitter {
   constructor(clientId, domain) {
     super()
@@ -13,12 +14,12 @@ class AuthService extends EventEmitter {
     if (this.hash && this.hash.error) {
       this._authorizationError()
     } else if (this.hash && this.hash.idToken) {
-      this._doAuthentication();
+      this._doAuthentication()
     }
     // Here we set the three different authentication options and make them available to use in our template.
-    this.loginMagiclink = this.loginMagiclink.bind(this);
-    this.loginEmailCode = this.loginEmailCode.bind(this);
-    this.loginSMSCode = this.loginSMSCode.bind(this);
+    this.loginMagiclink = this.loginMagiclink.bind(this)
+    this.loginEmailCode = this.loginEmailCode.bind(this)
+    this.loginSMSCode = this.loginSMSCode.bind(this)
   }
 
   // The _doAuthentication function will get the user profile information if authentication is successful
@@ -26,10 +27,10 @@ class AuthService extends EventEmitter {
     if(this.hash){
       localStorage.setItem('id_token', this.hash.idToken);
       // The setProfile function sets the user profile information in localStorage
-      this.lock.getProfile(this.hash.idToken, this.setProfile.bind(this));
+      this.lock.getProfile(this.hash.idToken, this.setProfile.bind(this))
     } else {
       localStorage.setItem('id_token', id_token);
-      this.lock.getProfile(id_token, this.setProfile.bind(this));
+      this.lock.getProfile(id_token, this.setProfile.bind(this))
     }
   }
 
@@ -64,7 +65,11 @@ class AuthService extends EventEmitter {
   loggedIn(){
     // Checks if there is a saved token and it's still valid
     const token = this.getToken()
-    return !!token && !isTokenExpired(token)
+    if(token && isTokenExpired(token)) {
+      this.logout()
+      return false
+    }
+    return !!token
   }
   setProfile(err, profile){
     // Saves profile data to localStorage
@@ -80,6 +85,7 @@ class AuthService extends EventEmitter {
   setToken(idToken){
     // Saves user token to localStorage
     localStorage.setItem('id_token', idToken)
+    this.emit('token_updated', idToken)
   }
   getToken(){
     // Retrieves the user token from localStorage
@@ -87,8 +93,8 @@ class AuthService extends EventEmitter {
   }
   logout(){
     // Clear user token and profile data from localStorage
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('profile');
+    localStorage.removeItem('id_token')
+    localStorage.removeItem('profile')
   }
 }
 

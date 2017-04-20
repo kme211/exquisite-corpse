@@ -6,6 +6,12 @@ describe('getAdjacentPositions', () => {
     const expected = [[1,0], [0,1]]
     expect(actual).toEqual(expected)
   })
+
+  test('does not return positions out of the bounds of the grid when you pass a height and width', () => {
+    const actual = getAdjacentPositions([0,1], 2, 2)
+    const expected = [[1,1], [0,0]]
+    expect(actual).toEqual(expected)
+  })
 })
 
 describe('getAllPositions', () => {

@@ -33,7 +33,7 @@ const ListItem = ({_id, status, url}) => {
     <StyledListItem>
       {status === 'complete' && <a href={url} target="_blank"><img src={url} height="250" alt="your masterpiece"/></a>}
       <Status>{status}</Status>
-      <ShareLink href="http://twitter.com"><Icon icon="social-twitter"/> Share</ShareLink>
+      {status === 'complete' && <ShareLink href="http://twitter.com"><Icon icon="social-twitter"/> Share</ShareLink>}
     </StyledListItem>
   )
 }

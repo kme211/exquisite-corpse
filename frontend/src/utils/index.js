@@ -1,7 +1,7 @@
 import isEqual from 'lodash/isEqual'
 import curry from 'lodash/curry'
 
-export const getAdjacentPositions = (pos) => {
+export const getAdjacentPositions = (pos, width = Infinity, height = Infinity) => {
   const [ x, y ] = pos
   let adjacentPositions = [
     [x - 1, y], 
@@ -10,7 +10,11 @@ export const getAdjacentPositions = (pos) => {
     [x, y + 1]
   ]
   return adjacentPositions
-    .filter(position => position.every(num => num >= 0))
+    .filter(position => {
+      const x = position[0]
+      const y = position[1]
+      return x >= 0 && x < width && y >= 0 && y < height
+    })
 }
 
 export const getAllPositions = ({ height, width }) => {

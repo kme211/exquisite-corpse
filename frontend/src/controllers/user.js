@@ -1,17 +1,15 @@
-export function getUser() {
-  console.log('getUser')
-  let appData = window.localStorage.getItem('exquisite-corpse')
-  if(!appData) return null
-  return JSON.parse(appData).user
+import axios from 'axios'
+
+export function getUser(auth0_id) {
+  console.log('controllers/user.getUser()', auth0_id)
+  return axios.get(`users/${auth0_id}`)
 }
 
-export function setUser(user) {
-  let appData = window.localStorage.getItem('exquisite-corpse')
-  if(appData) {
-    appData = JSON.parse(appData)
-  } else {
-    appData = { drawings: [] }
+export function newUser(auth0_id, email) {
+  console.log('controllers/user.newUser()', auth0_id, email)
+  const data = {
+    auth0_id,
+    email
   }
-  appData = JSON.stringify(Object.assign({}, appData, { user }))
-  window.localStorage.setItem('exquisite-corpse', appData)
+  return axios.post('users', data)
 }
